@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.4.1
+Version: 0.5.0
 
 ## Table of Contents
 
@@ -24,7 +24,6 @@ Version: 0.4.1
     * [Examples](#examples-2)
   * [Floating-Point Number](#floating-point-number)
     * [Syntax](#syntax-3)
-    * [Notes](#notes-2)
     * [Examples](#examples-3)
   * [Boolean](#boolean)
     * [Examples](#examples-4)
@@ -388,7 +387,38 @@ The floating-point number type can used to represent real numbers. Implementatio
 
 ### Syntax
 
+An ordinary *primitive literal* of this type consists of three parts (strictly in this order):
+
+  * a mandatory integer part,
+  * an optional fractional part,
+  * an optional exponent part.
+
+The following *primitive literals* are also available:
+
+  * positive infinity: `inf` or `+inf`,
+  * negative infinity: `-inf`,
+  * NaN: `nan`.
+
+#### Integer Part
+
+The integer part should be formed following the same rules that of the [Signed Integer](signed-integer) type with one subtle difference regarding grouping characters. If `.` (dot) is used as a grouping character, then the decimal separator character must be `,` (comma). Similarly, if `,` (comma) is used as a grouping character, then the decimal separator character must be `.` (dot).
+
+#### Fractional Part
+
+In the fractional part, grouping can be used in the same way as in the integer part.
+
+#### Exponent Part
+
+The exponent part must start with either `e` or `E`. Grouping is disallowed in the exponent part.
+
 ### Examples
+
+~~~~
+[infinity](float, "inf"),
+[-0.0](float),
+[100_00.12](float),
+[5.55E-10](float)
+~~~~
 
 ## Boolean
 
