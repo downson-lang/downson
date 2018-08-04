@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.3.0
+Version: 0.4.0
 
 ## Preliminaries
 
@@ -62,26 +62,26 @@ Overrides the literal value. Must be a valid literal of the type defined by the 
 Define the string `Hello, World!`:
 
 ~~~~
-[Hello, World!]({string})
+[Hello, World!](string)
 ~~~~
 
 Define the integer value `42`:
 
 ~~~~
-[42]({int})
+[42](int)
 ~~~~
 
 *Value overrides* for boolenas:
 
 ~~~~
-[vrai]({bool} "true")
-[faux]({bool} "false")
+[vrai](bool "true")
+[faux](bool "false")
 ~~~~
 
 Float *value override*:
 
 ~~~~
-[π]({float} "3.14")
+[π](float "3.14")
 ~~~~
 
 ### Built-in Primitive Types
@@ -133,7 +133,7 @@ Objects are unordered key-value containers. Keys can be arbitrary strings while 
 An empty object can be represented by the following literal syntax:
 
 ~~~~
-[]({object} "empty")
+[](object "empty")
 ~~~~
 
 Note, that this counts as a special case *value override*, therefore the *link text* is ignored.
@@ -228,13 +228,13 @@ The *binding direction* can take the following two values:
 Binding to the right:
 
 ~~~~
-The **.meaning of life** [](right) is [42]({int}).
+The **.meaning of life** [](right) is [42](int).
 ~~~~
 
 Binding to the left:
 
 ~~~~
-My PC has [8]({int}) gigabytes of **.memory** [](left).
+My PC has [8](int) gigabytes of **.memory** [](left).
 ~~~~
 
 ###### Nesting and terminating
@@ -250,7 +250,7 @@ The *object terminator* has the following syntax:
 A simple example with binding to the right:
 
 ~~~~Markdown
-Here I describe the **.configuration** [](right:object) of my PC. It has [8]({int}) gigabytes of **.memory** [](left) and a [500]({int}) TB capacity **.hard drive** [](left:alias "hardDrive") []($).
+Here I describe the **.configuration** [](right:object) of my PC. It has [8](int) gigabytes of **.memory** [](left) and a [500](int) GB capacity **.hard drive** [](left:alias "hardDrive") []($).
 ~~~~
 
 In this case, the object terminator ends the object which gets assigned to the `configuration` key. A JSON representation of the same data:
@@ -267,7 +267,7 @@ In this case, the object terminator ends the object which gets assigned to the `
 A more involved example is as follows:
 
 ~~~~Markdown
-The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [8080]({int}) with a [100]({int}) ms **.timeout** [](left) []($). The **.base path** [](right:alias "basePath") should be set to [/server]({string}) []($). []($)The **.connection string** [](right:alias "connection") should be set to [i:dont:know]({string}) for the **.database** [](left:object).
+The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [8080](int) with a [100](int) ms **.timeout** [](left) []($). The **.base path** [](right:alias "basePath") should be set to [/server](string) []($). []($)The **.connection string** [](right:alias "connection") should be set to [i:dont:know](string) for the **.database** [](left:object).
 ~~~~
 
 which has the following JSON representation:
@@ -304,8 +304,8 @@ Simple string values can be represented using *primitive literals*. In addition 
 ### Examples
 
 ~~~~
-[Hello, World!]({string})
-[/home/downson/spec.md]({string})
+[Hello, World!](string)
+[/home/downson/spec.md](string)
 ~~~~
 
 ~~~~
@@ -337,17 +337,17 @@ Implementations are expected to provide at least 64 bits of storage space for si
 ### Examples
 
 ~~~~
-[100]({int})
-[-128]({int})
-[0100]({int}) <- INVALID!!!
+[100](int)
+[-128](int)
+[0100](int) <- INVALID!!!
 
-[the meaning of life]({int} "42")
+[the meaning of life](int "42")
 
-[1 000 000]({int}) <- means 1000000
-[1_000_000]({int}) <- means 1000000
-[1.000.000]({int}) <- means 1000000
+[+1 000 000](int) <- means 1000000
+[1_000_000](int) <- means 1000000
+[1.000.000](int) <- means 1000000
 
-[1_123 0.0.0]({int}) <- BAD PRACTICE!!! Means 1123000.
+[1_123 0.0.0](int) <- BAD PRACTICE!!! Means 1123000.
 ~~~~
 
 ## Floating-Point Number
@@ -376,9 +376,9 @@ No special syntax.
 ### Examples
 
 ~~~~
-[true]({boolean})
+[true](boolean)
 
-[vrai]({boolean} "true") <- French for "true"
+[vrai](boolean "true") <- French for "true"
 ~~~~
 
 ## List
@@ -392,7 +392,7 @@ A list is an ordered container of heterogenous values. A list can contain values
 An empty list can be represented by the following literal syntax:
 
 ~~~~
-[]({list} "empty")
+[](list "empty")
 ~~~~
 
 Note, that this counts as a special case *value override*, therefore the *link text* is ignored.
@@ -414,28 +414,28 @@ When one would like to store objects with the same keys in a list, the [GFM Tabl
 Define a list of integers from 1 to 5:
 
 ~~~~
-  1. [1]({int})
-  1. [2]({int})
-  1. [3]({int})
-  1. [4]({int})
-  1. [5]({int})
+  1. [1](int)
+  1. [2](int)
+  1. [3](int)
+  1. [4](int)
+  1. [5](int)
 ~~~~
 
 Define a list of two empty lists:
 
 ~~~~
-  1. []({list} "empty")
-  1. []({list} "empty")
+  1. [](list "empty")
+  1. [](list "empty")
 ~~~~
 
 Define a list containing two numbers and a list of two floats (pay attention to the indentation!):
 
 ~~~~
-  1. [73]({int})
-  1. [100]({int})
+  1. [73](int)
+  1. [100](int)
   1.
-      1. [8.32]({float})
-      1. [-9.331]({float})
+      1. [8.32](float)
+      1. [-9.331](float)
 ~~~~
 
 Define a list of two objects using the table syntax:
@@ -443,8 +443,8 @@ Define a list of two objects using the table syntax:
 ~~~~Markdown
 | Name [](alias "firstName") | Age [](alias "age")  | Comments [](ignore)         |
 |----------------------------|----------------------|-----------------------------|
-| [Alice]({string})          | [23]({int})          | Likes to send messages.     |
-| [Bob]({string})            | [34]({int})          | Likes to received messages. |
+| [Alice](string)            | [23](int)            | Likes to send messages.     |
+| [Bob](string)              | [34](int)            | Likes to received messages. |
 ~~~~
 
 The JSON representation of the last example is as follows:
