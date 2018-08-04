@@ -1,6 +1,36 @@
 # The Downson Specification
 
-Version: 0.4.0
+Version: 0.4.1
+
+## Table of Contents
+
+  * [Preliminaries](#preliminaries)
+    * [Handling Parser Failures](#handling-parser-failures)
+    * [Structure](#structure)
+  * [Primer on Types](#primer-on-types)
+    * [Primitive Literals](#primitive-literals)
+    * [Built-in Primitive Types](#built-in-primitive-types)
+    * [Custom Primitive Types](#custom-primitive-types)
+    * [Complex Types](#complex-types)
+  * [Object](#object)
+    * [Syntax](#syntax)
+    * [Notes](#notes)
+  * [String](#string)
+    * [Syntax](#syntax-1)
+    * [Examples](#examples-1)
+  * [Signed Integer](#signed-integer)
+    * [Syntax](#syntax-2)
+    * [Notes](#notes-1)
+    * [Examples](#examples-2)
+  * [Floating-Point Number](#floating-point-number)
+    * [Syntax](#syntax-3)
+    * [Notes](#notes-2)
+    * [Examples](#examples-3)
+  * [Boolean](#boolean)
+    * [Examples](#examples-4)
+  * [List](#list)
+    * [Syntax](#syntax-4)
+    * [Examples](#examples-5)
 
 ## Preliminaries
 
@@ -368,10 +398,6 @@ Represents a truth value. Boolean has only two valid literal values:
 
   * `true`,
   * `false`.
-
-### Syntax
-
-No special syntax.
 
 ### Examples
 
