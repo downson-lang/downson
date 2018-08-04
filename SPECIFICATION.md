@@ -1,65 +1,63 @@
 # The Downson Specification
 
-Version: 0.1.0
+Version: 0.2.0
 
-## Basics
+## Preliminaries
 
-Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) syntax. Downson is an extension such that downson documents are valid GFM documents. Therefore implementors of this specification should first examine the GFM specification for guidelines.
+Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) syntax. Downson is an extension such that downson documents are valid GFM documents. Therefore implementors of this specification should first consult the GFM specification for guidelines.
+
+### Handling Parser Failures
+
+Parsers should implement the following behaviour in case of a parsing failure:
+
+  * if a value (ie. an instance of a type, regardless of being a complex or primitive type) cannot be parsed, then
+    * ignore the value,
+    * ignore the corresponding object key
+  * if an object key cannot be parsed, then
+    * ignore the object key
+    * ignore the value corresponding to the object key.
+
+Even in case of a partial failure, the above guidelines should be followed. Some examples of partial failures:
+
+  * the name and the binding direction of the object key can be parsed, but the alias is ill-formed,
+  * the name of the object key can be parsed, but the binding direction is ill-formed.
+
+Although in case of a partial failure, it would be possible to generate some data from the ill-formed section of the document, this would not reflect the original intention of the user. However, the client of the parser must be informed of the issues in form of a warning.
+
+### Structure
+
+A downson document is always an *object* which object is referred to as the *top-level object*. An empty downson document is an empty object.
 
 ## Primer on Types
 
-### Primitive Types
+In the following subsections, the types provided by downson are described.
 
-The following primitive types are supported:
+### Primitive Literals
 
-  * string,
-  * signed integer,
-  * floating-point number,
-  * boolean.
+A literal representing a value of some primitive type (built-in or custom) is called a *primitive literal*. The syntax of *primitive literals* makes use of the [GFM Inline Link](https://github.github.com/gfm/#inline-link) syntax as follows:
 
-Primitive types **can be**
+  * *link text* is interpreted as the actual literal,
+  * *link destination* contains the mandatory *type hint*,
+  * the optional *link title* can contain a *value override*.
 
-  * represented with literals,
-  * value hinted.
+#### Link Text
 
-#### Literal Value Syntax
+The *link text* (characters between the square brackets) forms the actual literal. 
 
-Values of primitive types are represented by literals that in turn make use of the [GFM inline link](https://github.github.com/gfm/#inline-link) syntax. The *link text* is interpreted as the literal, while the *link destination* contains the mandatory *type hint* and the *link title* contains the optional *value override*.
+#### Link Destination - Type Hint
 
-In case of a parser failure, it is assumed, that the inline link element does not describe a downson literal value.
+The *link destination* contains the *type hint* which describes the type of the *primitive literal*. The *type hint* can be the name of any built-in primitive type or the name of a custom primitive type.
 
-The following subsections describe the exact syntax.
+#### Link Title - Value Override
 
-##### Link Text
+A *value override* has the following properties:
 
-The link text (characters between the square brackets) forms the actual literal. 
-
-##### Link Destination
-
-The link text is divided into two sections:
-
-###### Type hint
-
-Defines the type of the literal. Can be the name of any primitive type or the name of a custom primitive type. The *type hint* is enclosed in curly braces.
-
-###### Value override
+  * overrides the literal value provided in the *link text*,
+  * **must be** a valid value of the type defined by the *type hint*.
 
 Overrides the literal value. Must be a valid literal of the type defined by the *type hint*.
 
-What's the point of value overrides?  As the primary goal of downson is to be human readable, there can be situations when the literal for the human reader and the actual data for the consuming application should be different. For example, in Hungarian, `igaz` means true and `hamis` means false. Therefore it is convenient to use value overrides in Hungarian documents:
-
-~~~~
-[igaz]({bool} "true")
-[hamis]({bool} "false")
-~~~~
-
-Another example is the mathematical constant π:
-
-~~~~
-[π]({float} "3.14")
-~~~~
-
-##### Examples
+#### Examples
 
 Define the string `Hello, World!`:
 
@@ -73,15 +71,37 @@ Define the integer value `42`:
 [42]({int})
 ~~~~
 
-For examples on value overrides, please see the section above.
+*Value overrides* for boolenas:
 
-#### Custom Primitive Types
+~~~~
+[vrai]({bool} "true")
+[faux]({bool} "false")
+~~~~
 
-On top of the predefined primitive types, custom primitive types can be added to Downson. Every compliant implementation of the downson specification is **required** to provide hooks for user-defined code to parse and process literals of custom types.
+Float *value override*:
+
+~~~~
+[π]({float} "3.14")
+~~~~
+
+### Built-in Primitive Types
+
+Downson has the following built-in primitive types:
+
+  * string,
+  * signed integer,
+  * floating-point number,
+  * boolean.
+
+### Custom Primitive Types
+
+On top of the built-in primitive types, custom primitive types can be added to downson.
+
+An implementation of the downson specification is **required** to provide hooks for user-defined code to parse and process *primitive literals* of custom primitive types.
 
 The syntax for custom type names are defined as follows:
 
-  * the type name **must not** contain whitespace characters (as whitespace is defined by the [GFM specification](https://github.github.com/gfm/#whitespace)),
+  * the type name **must be** a valid *link destination*,
   * the type name **must** differ from the built-in type names:
       * `int`,
       * `string`,
@@ -90,33 +110,23 @@ The syntax for custom type names are defined as follows:
       * `list`,
       * `object`.
 
-<!---
-#### Type Properties 
--->
-
 ### Complex Types
 
-The following complex types are supported:
+Complex types differ from primitive types in the following aspects:
 
-  * list,
-  * object (or map).
+  * apart from some edge-cases, values of complex types cannot be represented by literals,
+  * as a consequence, *value override* is not defined for complex types.
 
-Complex types **can**
+Downson supports the following built-in complex types:
 
-  * contain values of other types.
-
-Complex types (apart from some corner-cases) **cannot be**
-
-  * represented with literals,
-  * subject to a value override.
+  * object,
+  * list.
 
 ## Object
 
 **Type hint**: `object` - only for the empty object literal
 
 Objects are unordered key-value containers. Keys can be arbitrary strings while values can be of any type including the object type itself.
-
-A literal or list is only processed by downson if it is assigned to some key of some object. By default, an empty downson document is an empty object. This empty object is referred to as the *top-level object*.
 
 ### Syntax
 
@@ -126,61 +136,59 @@ An empty object can be represented by the following literal syntax:
 []({object} "empty")
 ~~~~
 
-Note, that this counts as a *value override*, therefore the *link text* is ignored.
+Note, that this counts as a special case *value override*, therefore the *link text* is ignored.
 
-Keys can be created using any of the following two forms.
+Object keys can be created using any of the following two forms.
 
 #### Header Syntax
 
-Keys on the top-level object can be registered using level-one GFM ATX headings or with emphasis syntax keys that have no preceding heading. Nested objects can be created using headings of increased depth where the key is derived from the heading text "as is". We refer to the object introduced by the previous header as the *current object*, and denote the depth of the current heading with `c` and the depth of the new heading with `n`:
+In what follows, we define the following terms and notations:
 
-  * if `c = n`, then the new object is registered on the parent of the *current object*,
-  * if `c > n`, then the new object is registered on the object created by a previous heading with depth `k - 1`,
-  * if `n < c`, where `c - n = 1` then the new object is registered on the *current object*. Cases when `c - n > 1` are not permitted.
+  * The object introduced by the previous heading is referred to as the *current object*. If there is no previous heading, then the *current object* is the *top-level* object.
+  * The level of the previous heading is denoted as `p`.
+  * The level of the new heading is denoted as `n`.
 
-By default, new keys are registered on the heading's *current object*, unless otherwise noted.
+A [GFM ATX Heading](https://github.github.com/gfm/#atx-headings) creates a new empty object and registers it according to the following rules:
 
-##### Key alias and ignore alias
+  * if `p = n`, then the new object is registered on the parent of the *current object*,
+  * if `p > n`, then the new object is registered on the object created by a previous heading with depth `n - 1`,
+  * if `n < p`, where `p - n = 1` then the new object is registered on the *current object*. Cases when `p - n > 1` are not permitted.
 
-As described previously, the string that represents the new key is derived straight from the heading text. To override this setting, one can use a *key alias*. A key alias has the following syntax:
+Subsequent keys defined with the *emphasis syntax* are registered on the *current object*, unless otherwise noted.
+
+##### Key Alias
+
+As described previously, by default the string that represents the new key is the heading text itself. To override this setting, one can use a *key alias*. A *key alias* has the following syntax:
 
 ~~~~
 ## Heading Text [](alias "key-alias")
 ~~~~
 
-where the link title (`key-alias`) is the actual alias, and the string `alias` (which is the link destination) must be present for parsing purposes.
+where the *link title* is the actual alias, and the string `alias` in the *link destination* is just a marker for parsing purposes.
 
 The key is set to be the string between the dobule-quotes.
 
-One can also use an *ignore alias* to entirely skip the contents until the next same- or upper-level heading. The syntax of *ignore alias* is as follows:
+##### Ignore Alias
+
+An *ignore alias* can be used to skip the contents until the next same- or upper-level heading entirely. The syntax of *ignore alias* is as follows:
 
 ~~~~
 ## Skip me []()
-
--- or --
-
-## Skip me [](    ) <- whitespace-only
 ~~~~
-
-Note, that between the heading text and the key/ignore alias, only whitespace can be placed.
 
 #### Emphasis Syntax
 
-Keys on the current object can be registered using the so-called *emphasis syntax*. The emphasis syntax consists of the following:
+Keys on the **current object** can be registered using the so-called *emphasis syntax*. The emphasis syntax consists of the following:
 
   * a mandatory `.` (dot) character,
   * a mandatory string describing the key name,
-  * either an ignore alias or key-metadata
+  * either an *ignore alias* or *key metadata*.
 
 The syntax is as follows:
 
 ~~~~
 **.key-name** ignore-alias or key-metadata
 ~~~~
-
-##### Key Name
-
-The actual name of the key must be preceded by a `.` (dot) character. The string after the `.` is the actual key name.
 
 ##### Ignore alias
 
@@ -190,7 +198,7 @@ Ignore alias works the same way as in the case of the *heading syntax*:
 **.skip me** []()
 ~~~~
 
-Note, that the *ignore alias* is only needed, when a key is a syntactically valid downson key. In case of a parser error, no new key is created.
+Note, that the *ignore alias* is only needed, when the key would be a syntactically valid downson object key.
 
 ##### Key metadata
 
@@ -231,9 +239,9 @@ My PC has [8]({int}) gigabytes of **.memory** [](left).
 
 ###### Nesting and terminating
 
-A key can be used to introduce a nested object using the `object` field in the key metadata. The `object` field tells the downson parser, that all keys between the current key and the next unmatched object terminator (or either the beginning/end of the file or a heading) in the binding direction should be registered on a new nested object.
+A key can be used to introduce a nested object using the `object` field in the *key metadata*. The `object` field tells the downson parser, that all keys between the current key and the next unmatched *object terminator* (or either the beginning/end of the file or a heading) in the binding direction should be registered on a new nested object.
 
-The object terminator is defined as follows:
+The *object terminator* has the following syntax:
 
 ~~~~
 []($)
@@ -281,8 +289,7 @@ which has the following JSON representation:
 
 ### Notes
 
-The same key **must not** appear twice.
-
+The same key on the same object **must not** appear twice.
 
 ## String
 
@@ -292,7 +299,7 @@ String is a primitive type consisting of a finite sequence of characters.
 
 ### Syntax
 
-Simple strings values can be represented using the normal literal syntax. In addition to that, multiline strings can be represented in a verbatim (completely whitespace-preserving) form by piggybacking the [GFM Code Block] syntax. However, *value overriding* is not possible for verbatim strings.
+Simple string values can be represented using *primitive literals*. In addition to that, multiline strings can be represented in a verbatim (completely whitespace-preserving) form by piggybacking the [GFM Fenced Code Block](https://github.github.com/gfm/#fenced-code-blocks) syntax. However, *value overriding* is not possible for verbatim strings.
 
 ### Examples
 
@@ -388,19 +395,19 @@ An empty list can be represented by the following literal syntax:
 []({list} "empty")
 ~~~~
 
-Note, that this counts as a *value override*, therefore the *link text* is ignored.
+Note, that this counts as a special case *value override*, therefore the *link text* is ignored.
 
 #### GFM Ordered List Syntax
 
-In simpler cases, mostly when storing primitive values or other lists in a list, the [GFM ordered list](https://github.github.com/gfm/#ordered-list) syntax can be used. The contents of a GFM list element are inserted into the list.
+In simpler cases, mostly when storing primitive values or other lists in a list, the [GFM Ordered List](https://github.github.com/gfm/#ordered-list) syntax can be used. The contents of a GFM list element are inserted into the list.
 
 #### GFM Table Syntax
 
-When one would like to store object with the same keys in a list, the [GFM table] syntax can be used. In this case, the column names in the table header are going to be the keys of the stored objects, while the values in the table cells are going to be the values assigned to the respective keys.
+When one would like to store objects with the same keys in a list, the [GFM Table](https://github.github.com/gfm/#tables-extension-) syntax can be used. In this case, the column names in the table header are going to be the keys of the stored objects, while the values in the table cells are going to be the values assigned to the respective keys.
 
-  * Key aliasing can be used for column (and therefore, key) names.
-  * Ignore aliasing can be used to ignore columns.
-  * The same key may hold values of different types in different objects.
+  * *Key aliasing* can be used for column (and therefore, key) names.
+  * *Ignore aliasing* can be used to ignore columns.
+  * The same key may hold values of different types in different rows.
 
 ### Examples
 
