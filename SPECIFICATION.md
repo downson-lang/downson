@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.2.0
+Version: 0.3.0
 
 ## Preliminaries
 
@@ -173,7 +173,7 @@ The key is set to be the string between the dobule-quotes.
 An *ignore alias* can be used to skip the contents until the next same- or upper-level heading entirely. The syntax of *ignore alias* is as follows:
 
 ~~~~
-## Skip me []()
+## Skip me [](ignore)
 ~~~~
 
 #### Emphasis Syntax
@@ -195,7 +195,7 @@ The syntax is as follows:
 Ignore alias works the same way as in the case of the *heading syntax*:
 
 ~~~~
-**.skip me** []()
+**.skip me** [](ignore)
 ~~~~
 
 Note, that the *ignore alias* is only needed, when the key would be a syntactically valid downson object key.
@@ -441,7 +441,7 @@ Define a list containing two numbers and a list of two floats (pay attention to 
 Define a list of two objects using the table syntax:
 
 ~~~~Markdown
-| Name [](alias "firstName") | Age [](alias "age")  | Comments []()               |
+| Name [](alias "firstName") | Age [](alias "age")  | Comments [](ignore)         |
 |----------------------------|----------------------|-----------------------------|
 | [Alice]({string})          | [23]({int})          | Likes to send messages.     |
 | [Bob]({string})            | [34]({int})          | Likes to received messages. |
