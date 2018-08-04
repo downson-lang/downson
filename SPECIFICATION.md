@@ -150,7 +150,7 @@ As described previously, the string that represents the new key is derived strai
 
 where the link title (`key-alias`) is the actual alias, and the string `alias` (which is the link destination) must be present for parsing purposes.
 
-The key is set to be the string between the parentheses.
+The key is set to be the string between the dobule-quotes.
 
 One can also use an *ignore alias* to entirely skip the contents until the next same- or upper-level heading. The syntax of *ignore alias* is as follows:
 
@@ -214,8 +214,8 @@ where the square brackets (except for the first pair) denote optional content.
 
 The *binding direction* can take the following two values:
 
-  * `left` if the value corresponding to the current key is on the **right** side of the key,
-  * `right` if the value corresponding to the current key is on the **left** side of the key.
+  * `left` if the value corresponding to the current key is on the **left** side of the key,
+  * `right` if the value corresponding to the current key is on the **right** side of the key.
 
 Binding to the right:
 
@@ -241,7 +241,7 @@ The object terminator is defined as follows:
 
 A simple example with binding to the right:
 
-~~~~
+~~~~Markdown
 Here I describe the **.configuration** [](right:object) of my PC. It has [8]({int}) gigabytes of **.memory** [](left) and a [500]({int}) TB capacity **.hard drive** [](left:alias "hardDrive") []($).
 ~~~~
 
@@ -258,8 +258,8 @@ In this case, the object terminator ends the object which gets assigned to the `
 
 A more involved example is as follows:
 
-~~~~
-The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [80]({int}) with a [100]({int}) ms **.timeout** [](left) []($). The **.base path** [](right:alias "basePath") should be set to [/server]({string}) []($). []($)The **.connection string** [](right:alias "connection") should be set to [i:dont:know]({string}) for the **.database** [](left:object).
+~~~~Markdown
+The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [8080]({int}) with a [100]({int}) ms **.timeout** [](left) []($). The **.base path** [](right:alias "basePath") should be set to [/server]({string}) []($). []($)The **.connection string** [](right:alias "connection") should be set to [i:dont:know]({string}) for the **.database** [](left:object).
 ~~~~
 
 which has the following JSON representation:
@@ -396,14 +396,15 @@ In simpler cases, mostly when storing primitive values or other lists in a list,
 
 #### GFM Table Syntax
 
-When one would like to store object with the same keys in a list, the [GFM table] syntax can be used. In this case, the row names in the table header are going to be the keys of the stored objects, while the values in the table cells are going to be the values assigned to the respective keys.
+When one would like to store object with the same keys in a list, the [GFM table] syntax can be used. In this case, the column names in the table header are going to be the keys of the stored objects, while the values in the table cells are going to be the values assigned to the respective keys.
 
-  * Key aliasing can be used for row (and therefore, key) names.
+  * Key aliasing can be used for column (and therefore, key) names.
+  * Ignore aliasing can be used to ignore columns.
   * The same key may hold values of different types in different objects.
 
 ### Examples
 
-Define a list of number from 1 to 5:
+Define a list of integers from 1 to 5:
 
 ~~~~
   1. [1]({int})
@@ -420,7 +421,7 @@ Define a list of two empty lists:
   1. []({list} "empty")
 ~~~~
 
-Define a list containing two numbers and a list of two floats (keep attention to the indentation!):
+Define a list containing two numbers and a list of two floats (pay attention to the indentation!):
 
 ~~~~
   1. [73]({int})
@@ -432,10 +433,24 @@ Define a list containing two numbers and a list of two floats (keep attention to
 
 Define a list of two objects using the table syntax:
 
-~~~~
-| Name              | Age          |
-|-------------------|--------------|
-| [Alice]({string}) | [23]({int})  |
-| [Bob]({string})   | [34]({int})  |
+~~~~Markdown
+| Name [](alias "firstName") | Age [](alias "age")  | Comments []()               |
+|----------------------------|----------------------|-----------------------------|
+| [Alice]({string})          | [23]({int})          | Likes to send messages.     |
+| [Bob]({string})            | [34]({int})          | Likes to received messages. |
 ~~~~
 
+The JSON representation of the last example is as follows:
+
+~~~~JSON
+[
+  {
+    "firstName": "Alice",
+    "age": 23
+  },
+  {
+    "firstName": "Bob",
+    "age": 34
+  }
+]
+~~~~
