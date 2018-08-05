@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.5.0
+Version: 0.5.1
 
 ## Table of Contents
 
@@ -71,7 +71,7 @@ A literal representing a value of some primitive type (built-in or custom) is ca
 
 #### Link Text
 
-The *link text* (characters between the square brackets) forms the actual literal. 
+The *link text* forms the actual literal.
 
 #### Link Destination - Type Hint
 
@@ -83,8 +83,6 @@ A *value override* has the following properties:
 
   * overrides the literal value provided in the *link text*,
   * **must be** a valid value of the type defined by the *type hint*.
-
-Overrides the literal value. Must be a valid literal of the type defined by the *type hint*.
 
 #### Examples
 
@@ -100,7 +98,7 @@ Define the integer value `42`:
 [42](int)
 ~~~~
 
-*Value overrides* for boolenas:
+*Value overrides* for booleans:
 
 ~~~~
 [vrai](bool "true")
@@ -128,7 +126,7 @@ On top of the built-in primitive types, custom primitive types can be added to d
 
 An implementation of the downson specification is **required** to provide hooks for user-defined code to parse and process *primitive literals* of custom primitive types.
 
-The syntax for custom type names are defined as follows:
+The syntax for custom primitive type names are defined as follows:
 
   * the type name **must be** a valid *link destination*,
   * the type name **must** differ from the built-in type names:
@@ -165,7 +163,7 @@ An empty object can be represented by the following literal syntax:
 [](object "empty")
 ~~~~
 
-Note, that this counts as a special case *value override*, therefore the *link text* is ignored.
+Note, that this counts as a special *value override*, therefore the *link text* is ignored.
 
 Object keys can be created using any of the following two forms.
 
@@ -187,7 +185,7 @@ Subsequent keys defined with the *emphasis syntax* are registered on the *curren
 
 ##### Key Alias
 
-As described previously, by default the string that represents the new key is the heading text itself. To override this setting, one can use a *key alias*. A *key alias* has the following syntax:
+By default the string that represents the new key is the heading text itself. To override this setting, one can use a *key alias*. A *key alias* has the following syntax:
 
 ~~~~
 ## Heading Text [](alias "key-alias")
@@ -207,7 +205,7 @@ An *ignore alias* can be used to skip the contents until the next same- or upper
 
 #### Emphasis Syntax
 
-Keys on the **current object** can be registered using the so-called *emphasis syntax*. The emphasis syntax consists of the following:
+Keys on the **current object** can be registered using the so-called *emphasis syntax* which is based on the [GFM Emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) syntax. The emphasis syntax consists of the following:
 
   * a mandatory `.` (dot) character,
   * a mandatory string describing the key name,
@@ -231,9 +229,9 @@ Note, that the *ignore alias* is only needed, when the key would be a syntactica
 
 ##### Key metadata
 
-The key metadata includes
+The key metadata includes (strictly in this order)
 
-  * the mandatory binding direction of the key, which can be `left` or `right`,
+  * the mandatory binding direction of the key, which can be either `left` or `right`,
   * optionally whether the key introduces a new nested object or not,
   * an optional key alias.
 
@@ -282,7 +280,7 @@ A simple example with binding to the right:
 Here I describe the **.configuration** [](right:object) of my PC. It has [8](int) gigabytes of **.memory** [](left) and a [500](int) GB capacity **.hard drive** [](left:alias "hardDrive") []($).
 ~~~~
 
-In this case, the object terminator ends the object which gets assigned to the `configuration` key. A JSON representation of the same data:
+In this case, the *object terminator* ends the object which gets assigned to the `configuration` key. A JSON representation of the same data:
 
 ~~~~JSON
 {
@@ -451,7 +449,7 @@ An empty list can be represented by the following literal syntax:
 [](list "empty")
 ~~~~
 
-Note, that this counts as a special case *value override*, therefore the *link text* is ignored.
+Note, that this counts as a special *value override*, therefore the *link text* is ignored.
 
 #### GFM Ordered List Syntax
 
@@ -500,7 +498,7 @@ Define a list of two objects using the table syntax:
 | Name [](alias "firstName") | Age [](alias "age")  | Comments [](ignore)         |
 |----------------------------|----------------------|-----------------------------|
 | [Alice](string)            | [23](int)            | Likes to send messages.     |
-| [Bob](string)              | [34](int)            | Likes to received messages. |
+| [Bob](string)              | [34](int)            | Likes to receive messages.  |
 ~~~~
 
 The JSON representation of the last example is as follows:
