@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.5.1
+Version: 0.6.0
 
 ## Table of Contents
 
@@ -35,6 +35,13 @@ Version: 0.5.1
 
 Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) syntax. Downson is an extension such that downson documents are valid GFM documents. Therefore implementors of this specification should first consult the GFM specification for guidelines.
 
+A downson document can be viewed from two perspectives:
+
+  * elements that influence the appearance of the output generated from the downson document form the *presentation layer*,
+  * elements that influence the shape and contents of the data generated from the downson document form the *data layer*.
+
+In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations when creating this specification.
+
 ### Handling Parser Failures
 
 Parsers should implement the following behaviour in case of a parsing failure:
@@ -51,7 +58,7 @@ Even in case of a partial failure, the above guidelines should be followed. Some
   * the name and the binding direction of the object key can be parsed, but the alias is ill-formed,
   * the name of the object key can be parsed, but the binding direction is ill-formed.
 
-Although in case of a partial failure, it would be possible to generate some data from the ill-formed section of the document, this would not reflect the original intention of the user. However, the client of the parser must be informed of the issues in form of a warning.
+Although in case of a partial failure, it would be possible to generate some data from the ill-formed section of the document, this would not reflect the original intention of the user. However, the client of the parser must be informed of the issues in form of a warning or an error.
 
 ### Structure
 
@@ -69,6 +76,13 @@ A literal representing a value of some primitive type (built-in or custom) is ca
   * *link destination* contains the mandatory *type hint*,
   * the optional *link title* can contain a *value override*.
 
+<details>
+<summary>Annotation</summary>
+
+The GFM Inline Link syntax was a good fit for literals. Regarding the *presentation layer*, inline links are always highlighted, which makes them stand out from their surrounding context that is a desirable feature when defining data. In addition to that, the *link destination* and *link title* parts make it possible to store metadata influencing the *data layer* without polluting the *presentation layer*.
+
+</details>
+
 #### Link Text
 
 The *link text* forms the actual literal.
@@ -83,6 +97,17 @@ A *value override* has the following properties:
 
   * overrides the literal value provided in the *link text*,
   * **must be** a valid value of the type defined by the *type hint*.
+
+<details>
+<summary>Annotation</summary>
+
+The *value override* feature was inspired by the two-faced (*presentation* and *data layer*) nature of downson documents. Situations can arise, when using an alias (override) for the same literal would increase the readability of the *presentation layer* but at the same time, the *data layer* should not be altered. Booleans make for a good example. Consider a downson document written in Hungarian. Hindering the document with Booleans literals like `true` or `false` would greatly perturb the *presentation layer*. Thanks to *value overrides*, one is not forced to use the well-formed *primitive literals* in the *presentation layer*.
+
+The *link title* feature is a perfect fit for *value overrides*. It is optional, just as *value overrides* are. By default, it does not modify directly the *presentation layer*, but is only visible when the user hovers the mouse over an inline link.
+
+One should be aware, however, not to abuse the *value override* syntax, because overusing or misusing it can create a huge gap between the *presentation layer* and *data layer*.
+
+</details>
 
 #### Examples
 
@@ -119,6 +144,17 @@ Downson has the following built-in primitive types:
   * signed integer,
   * floating-point number,
   * boolean.
+
+<details>
+<summary>Annotation</summary>
+
+When deciding, which primitive types to support out of the box, we wanted to take a conservative approach. Instead of trying to "get right" types for dates, currencies and such, we decided not to include them in the specification at all. The reasoning behing this decision is the following.
+
+Having a small set of built-in types makes the specification more concise and easier to implement. Ease of implementation is very important in the case of an emerging standard. Moreover, there are several programming languages that does not have built-in support for dates or the constant `null`. It seemed like a sensible choice, to miss out types like these, if client environments do the same.
+
+However, we are aware, that a modern standard should provide a way to represent the types we have intentionally left out. That's why downson has the *custom primitive types* feature. Although, this might lead to the fragmentation of the downson ecosystem, we believe that for example community-driven extensions for other types can be a better solution than including them right into the standard and therefore requiring every implementation to support them.
+
+</details>
 
 ### Custom Primitive Types
 
@@ -195,6 +231,19 @@ where the *link title* is the actual alias, and the string `alias` in the *link 
 
 The key is set to be the string between the dobule-quotes.
 
+<details>
+<summary>Annotation</summary>
+
+*Key alias* makes use of an invisible inline link to represent the alias. One could argue, that we should use the
+
+~~~~
+## [Heading Text](alias "key-alias")
+~~~~
+
+syntax instead. This, however, would greatly influence the *presentation layer* and, at the same time, would be too similar to the *primitive literal* syntax. These are the reasons, that made us to go with the invisible link syntax.
+
+</details>
+
 ##### Ignore Alias
 
 An *ignore alias* can be used to skip the contents until the next same- or upper-level heading entirely. The syntax of *ignore alias* is as follows:
@@ -263,6 +312,13 @@ Binding to the left:
 ~~~~
 My PC has [8](int) gigabytes of **.memory** [](left).
 ~~~~
+
+<details>
+<summary>Annotation</summary>
+
+*Binding directions* is arguably the most complex feature of downson. We could go with binding to the right only, as it covers most of the cases. However, we did not want downson to get in the way and restrain the grammar constructs that can be used. Thus, binding to the left is possible.
+
+</details>
 
 ###### Nesting and terminating
 
@@ -355,7 +411,7 @@ Represents a signed whole number.
   * Can start with a leading positive or negative sign.
   * Leading zeros are not allowed.
   * Always decimal.
-  * Digits can be grouped by any of the following characters: `_` (underscore), ` ` (single space), `.` (dot), `,` (comma). Different grouping characters can be mixed in the same literal, however that is considered to be bad practice. Grouping characters must be surrounded by at least one digit on both sides.
+  * Digits can be grouped by any of the following characters: `_` (underscore), ` ` (single space), `.` (dot), `,` (comma). Different grouping characters can be mixed in the same literal. Grouping characters must be surrounded by at least one digit on both sides.
 
 ### Notes
 
@@ -373,8 +429,7 @@ Implementations are expected to provide at least 64 bits of storage space for si
 [+1 000 000](int) <- means 1000000
 [1_000_000](int) <- means 1000000
 [1.000.000](int) <- means 1000000
-
-[1_123 0.0.0](int) <- BAD PRACTICE!!! Means 1123000.
+[1 000.000](int) <- means 1000000
 ~~~~
 
 ## Floating-Point Number
