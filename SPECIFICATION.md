@@ -1,12 +1,15 @@
 # The Downson Specification
 
-Version: 0.6.0
+Version: 0.7.0
 
 ## Table of Contents
 
   * [Preliminaries](#preliminaries)
+    * [Annotations](#annotations)
+    * [Presentation and Data Layer](#presentation-and-data-layer)
     * [Handling Parser Failures](#handling-parser-failures)
     * [Structure](#structure)
+    * [Filename Extension](#filename-extension)
   * [Primer on Types](#primer-on-types)
     * [Primitive Literals](#primitive-literals)
     * [Built-in Primitive Types](#built-in-primitive-types)
@@ -35,12 +38,16 @@ Version: 0.6.0
 
 Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) syntax. Downson is an extension such that downson documents are valid GFM documents. Therefore implementors of this specification should first consult the GFM specification for guidelines.
 
+### Annotations
+
+In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations when creating this specification.
+
+### Presentation and Data Layer
+
 A downson document can be viewed from two perspectives:
 
   * elements that influence the appearance of the output generated from the downson document form the *presentation layer*,
   * elements that influence the shape and contents of the data generated from the downson document form the *data layer*.
-
-In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations when creating this specification.
 
 ### Handling Parser Failures
 
@@ -63,6 +70,10 @@ Although in case of a partial failure, it would be possible to generate some dat
 ### Structure
 
 A downson document is always an *object* which object is referred to as the *top-level object*. An empty downson document is an empty object.
+
+### Filename Extesion
+
+Filenames of downson document should end with the `.downson` extension.
 
 ## Primer on Types
 
