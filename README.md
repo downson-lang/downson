@@ -20,6 +20,11 @@ Current formats embed documentation into the data.
 
 Downson inverts this principle. Data is embedded right into the documentation, offering a structured and sane approach for both the data and its documentation.
 
+## Goals and non-goals
+
+  * Downson aims to be easily read by **humans** and easily written by **humans**.
+  * Downson is **NOT** a data exchange format. It is best suited for configuration and other read-only data files.
+
 ## Implementations
 
 No implementations yet :frowning:.
