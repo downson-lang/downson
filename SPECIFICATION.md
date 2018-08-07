@@ -1,14 +1,14 @@
 # The Downson Specification
 
-Version: 0.10.0
+Version: 0.11.0
 
 ## Table of Contents
 
   * [Preliminaries](#preliminaries)
     * [Filename Extension](#filename-extension)
     * [Structure](#structure)
+    * [Significant, Well-formed and Ill-formed Elements](#significant-well-formed-and-ill-formed-elements)
     * [Failure Handling](#failure-handling)
-    * [Significant Elements](#significant-elements)
   * [Primer on Types](#primer-on-types)
     * [Primitive Literals](#primitive-literals)
     * [Built-in Primitive Types](#built-in-primitive-types)
@@ -16,7 +16,6 @@ Version: 0.10.0
     * [Complex Types](#complex-types)
   * [Object](#object)
     * [Syntax](#syntax)
-    * [Notes](#notes)
   * [String](#string)
     * [Syntax](#syntax-1)
     * [Examples](#examples-1)
@@ -52,27 +51,9 @@ A document can be viewed from two perspectives:
   * elements that influence the appearance of the output generated from the downson document form the *presentation layer*,
   * elements that influence the shape and contents of the data generated from the downson document form the *data layer*.
 
-### Failure Handling
+### Significant, Well-formed and Ill-formed Elements
 
-Parsers should implement the following behaviour in case of a parsing failure:
-
-  * if a value (ie. an instance of a type, regardless of being a complex or primitive type) cannot be parsed, then
-    * ignore the value,
-    * ignore the corresponding object key
-  * if an object key cannot be parsed, then
-    * ignore the object key
-    * ignore the value corresponding to the object key.
-
-Even in case of a partial failure, the above guidelines should be followed. Some examples of partial failures:
-
-  * the name and the binding direction of the object key can be parsed, but the alias is ill-formed,
-  * the name of the object key can be parsed, but the binding direction is ill-formed.
-
-Although in case of a partial failure, it would be possible to generate some data from the ill-formed section of the document, this would not reflect the original intention of the user. However, the client of the parser must be informed of the issues in form of a warning or an error.
-
-### Significant Elements
-
-A GFM element is considered to be *significant* if it influences either the *presentation* or the *data layer* of the downson document. 
+A GFM element is considered to be *significant* if it might influence either the *presentation* or the *data layer* of the downson document. 
 
 The *significant elements* are the following:
 
@@ -85,7 +66,20 @@ The *significant elements* are the following:
   * [Links](https://github.github.com/gfm/#links),
   * [Strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) (**NOT** emphasis).
 
-Other elements are **ignored**. 
+Other elements are **ignored**.
+
+A *well-formed element* is a *significant element*, that can be successfully interpreted as either an *object key* or a value of some type. *Significant elements* which are not *well-formed* are said to be *ill-formed*. *Ill-formed* elements are **ignored**.
+
+### Failure Handling
+
+Implementations should resort themselves to a highly flexible failure handling approach. This is a consequence of the fact, that downson is the extension of an existing format. To embrace a user-friendly behaviour, implementations should always produce at least an empty object as the result of the parsing process. On the other hand, all issues should be reported to the clients, sorted into two categories:
+
+  * ambiguous syntax, ie. when the intention in the document might have been unclear,
+  * downson interpretation errors.
+
+If at the end of the processing, only issues caused by ambiguous syntax are present, then the *data layer* might still be completely valid. Respectively, the presence of interpretation errors is almost always a sign of a *data layer* corruption.
+
+The exact failure handling behaviour is defined in *Failure* blocks.
 
 ## Primer on Types
 
@@ -106,13 +100,42 @@ The GFM Inline Link syntax was a good fit for literals. Regarding the *presentat
 
 </details>
 
+<details>
+<summary>Failure</summary>
+
+When ignoring an ill-formed *primitive literal*, a
+
+</details>
+
 #### Link Text
 
 The *link text* forms the actual literal.
 
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Syntax**
+
+  * If the *link text* is empty (ie. whitespace-only), then the *primitive literal* is *ill-formed*.
+
+**Interpretation Error**
+
+  * If the *type hint* describes a known type but neither the *link text*, nor the *value override* describe a valid literal of that type, then the *primitive literal* is *ill-formed* and both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
+
+</details>
+
 #### Link Destination - Type Hint
 
 The *link destination* contains the *type hint* which describes the type of the *primitive literal*. The *type hint* can be the name of any built-in primitive type or the name of a custom primitive type.
+
+<details>
+<summary>Failure</summary>
+
+**Ambigouous Syntax**
+
+  * If the *type hint* describes an unknown type, then the *primitive literal* is *ill-formed*.
+
+</details>
 
 #### Link Title - Value Override
 
@@ -219,10 +242,10 @@ Objects are unordered key-value containers. Keys can be arbitrary strings while 
 An empty object can be represented by the following literal syntax:
 
 ~~~~
-[](object "empty")
+[empty object](object "empty")
 ~~~~
 
-Note, that this counts as a special *value override*, therefore the *link text* is ignored.
+Note, that this counts as a special *value override*.
 
 Object keys can be created using any of the following two forms.
 
@@ -240,7 +263,22 @@ A [GFM ATX Heading](https://github.github.com/gfm/#atx-headings) or a [GFM Setex
   * if `p > n`, then the new object is registered on the object created by a previous heading with depth `n - 1`,
   * if `n < p`, where `p - n = 1` then the new object is registered on the *current object*. Cases when `p - n > 1` are not permitted.
 
+Only the following two forms are considered to be valid instances of the *header syntax*:
+
+  * a heading containing simple text only (ie. no emphasis or other inline elements). In this case the text is trimmed from both the left and the right and is taken as the key of the newly created object.
+  * a heading containing simple text followed by a single key alias or a single ignore alias only.
+
 Subsequent keys defined with the *emphasis syntax* are registered on the *current object*, unless otherwise noted.
+
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Syntax**
+
+  * If the `n < p` where `p - n = 1` nesting rule is violated, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+  * If the heading is of invalid syntax, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+
+</details>
 
 ##### Key Alias
 
@@ -267,6 +305,19 @@ syntax instead. This, however, would greatly influence the *presentation layer* 
 
 </details>
 
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Syntax**
+
+  * If the *link text* is not empty, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+
+**Interpretation Error**
+
+  * If the `alias` marker is **not** followed by some valid *link text*, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+
+</details>
+
 ##### Ignore Alias
 
 An *ignore alias* can be used to skip the contents until the next same- or upper-level heading entirely. The syntax of *ignore alias* is as follows:
@@ -275,6 +326,15 @@ An *ignore alias* can be used to skip the contents until the next same- or upper
 Skip me [](ignore)
 ==================
 ~~~~
+
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Sytnax**
+
+  * If the `ignore` marker is followed by some valid *link text*, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+
+</details>
 
 #### Emphasis Syntax
 
@@ -289,7 +349,16 @@ Keys on the **current object** can be registered using the so-called *emphasis s
 
 Emphasis syntax does not require the notion of *ignore alias*. If a syntactically valid (ie. starting with a dot) emphasis is read without an accompanying *key metadata*, then it is automatically ignored.
 
-Between the GFM Emphasis containing the key name and GFM Inline Link containing the key-metadata, only inline whitespaces are allowed.
+Between the GFM Emphasis containing the key name and GFM Inline Link containing the key-metadata, only spaces or tabs are allowed.
+
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Syntax**
+
+  * If the text inside the emphasis start with a dot, but the emphasis is not followed by *key metadata*, then the *object key* is *ill-formed*.
+
+</details>
 
 ##### Key metadata
 
@@ -308,6 +377,22 @@ The exact syntax is as follows:
 ~~~~
 
 where the square brackets (except for the first pair) denote optional content.
+
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Syntax**
+
+  * If the *link destination* is not any of the following:
+      * `left`,
+      * `right`,
+      * `left:object`,
+      * `right:object`,
+    
+    then the *object key* is *ill-formed*.
+  * If the *link text* is not empty, then the *object key* is *ill-formed*.
+
+</details>
 
 ###### Binding direction
 
@@ -337,7 +422,7 @@ My PC has [8](int) gigabytes of **.memory** [](left).
 
 ###### Nesting and terminating
 
-A key can be used to introduce a nested object using the `object` field in the *key metadata*. The `object` field tells the downson parser, that all keys between the current key and the next unmatched *object terminator* (or either the beginning/end of the file or a heading) in the binding direction should be registered on a new nested object.
+A key can be used to introduce a nested object using the `object` field in the *key metadata*. The `object` field tells the downson parser, that all keys between the current key and the next unmatched *object terminator* in the binding direction should be registered on a new nested object.
 
 The *object terminator* has the following syntax:
 
@@ -385,9 +470,20 @@ which has the following JSON representation:
 }
 ~~~~
 
-### Notes
+<details>
+<summary>Failure</summary>
 
-The same key on the same object **must not** appear twice.
+**Ambiguous Syntax**
+
+  * If a key is already registered on an object, then the current *object key* is *ill-formed*.
+
+**Interpretation Error**
+
+  * At the end of the document, all unterminated nested objects should be closed, and registered with the appropriate keys.
+  * At the next header, all unterminated nested objects should be closed, and registered with the appropriate keys.
+  * If a *left-binding* *object key* is detected witout a matching *object terminator*, then the *object key* is *ill-formed*. However, already registered keys and values should remain intact.
+
+</details>
 
 ## String
 
@@ -397,7 +493,7 @@ String is a primitive type consisting of a finite sequence of characters.
 
 ### Syntax
 
-Simple string values can be represented using *primitive literals*. In addition to that, multiline strings can be represented in a verbatim (completely whitespace-preserving) form by piggybacking the [GFM Fenced Code Block](https://github.github.com/gfm/#fenced-code-blocks) syntax. However, *value overriding* is not possible for verbatim strings.
+Simple string values can be represented using *primitive literals*. In addition to that, multiline strings can be represented in a verbatim (completely whitespace-preserving) form by piggybacking the [GFM Fenced Code Block](https://github.github.com/gfm/#fenced-code-blocks) and [GFM Indented Code Block](https://github.github.com/gfm/#indented-code-blocks) syntax. However, *value overriding* is not possible for verbatim strings.
 
 ### Examples
 
@@ -532,6 +628,22 @@ When one would like to store objects with the same keys in a list, the [GFM Tabl
   * *Key aliasing* can be used for column (and therefore, key) names.
   * *Ignore aliasing* can be used to ignore columns.
   * The same key may hold values of different types in different rows.
+
+There are two valid syntactical forms for heading cells:
+  * a cell containing simple text only (ie. no emphasis or other inline elements). In this case the text is trimmed from both the left and the right and is taken as the key.
+  * a cell containing simple text followed by a single key alias or a single ignore alias only.
+
+Normal (ie. non-heading) cells can only contain a single *primitive literal*
+
+<details>
+<summary>Failure</summary>
+
+**Ambiguous Syntax**
+
+  * If a heading cell is syntactically invalid or its contents are ill-formed, then the **whole** table is **ignored**.
+  * If a normal (ie. non-heading) cell is syntactically invalid or its contents are ill-formed, then the **whole** table is **ignored**.
+
+</details>
 
 ### Examples
 
