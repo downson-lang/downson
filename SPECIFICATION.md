@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.11.1
+Version: 0.12.0
 
 ## Table of Contents
 
@@ -40,7 +40,7 @@ In the subsequent sections, *Annotation* blocks are present to highlight the des
 
 ### Filename Extesion
 
-Downson files should the `.downson` extension.
+Downson has no special extension. The usual Markdown filename extension should be used.
 
 ### Structure
 
