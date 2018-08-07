@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.7.0
+Version: 0.8.0
 
 ## Table of Contents
 
@@ -300,7 +300,7 @@ The fields must be separated by `:` (colon) characters.
 The exact syntax is as follows:
 
 ~~~~
-[](left/right[:object][:alias] ["key-alias"])
+[](left/right[:object] ["key-alias"])
 ~~~~
 
 where the square brackets (except for the first pair) denote optional content.
@@ -344,7 +344,7 @@ The *object terminator* has the following syntax:
 A simple example with binding to the right:
 
 ~~~~Markdown
-Here I describe the **.configuration** [](right:object) of my PC. It has [8](int) gigabytes of **.memory** [](left) and a [500](int) GB capacity **.hard drive** [](left:alias "hardDrive") []($).
+Here I describe the **.configuration** [](right:object) of my PC. It has [8](int) gigabytes of **.memory** [](left) and a [500](int) GB capacity **.hard drive** [](left "hardDrive") []($).
 ~~~~
 
 In this case, the *object terminator* ends the object which gets assigned to the `configuration` key. A JSON representation of the same data:
@@ -361,7 +361,7 @@ In this case, the *object terminator* ends the object which gets assigned to the
 A more involved example is as follows:
 
 ~~~~Markdown
-The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [8080](int) with a [100](int) ms **.timeout** [](left) []($). The **.base path** [](right:alias "basePath") should be set to [/server](string) []($). []($)The **.connection string** [](right:alias "connection") should be set to [i:dont:know](string) for the **.database** [](left:object).
+The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [8080](int) with a [100](int) ms **.timeout** [](left) []($). The **.base path** [](right "basePath") should be set to [/server](string) []($). []($)The **.connection string** [](right "connection") should be set to [i:dont:know](string) for the **.database** [](left:object).
 ~~~~
 
 which has the following JSON representation:
