@@ -1,15 +1,14 @@
 # The Downson Specification
 
-Version: 0.9.0
+Version: 0.9.1
 
 ## Table of Contents
 
   * [Preliminaries](#preliminaries)
-    * [Annotations](#annotations)
-    * [Presentation and Data Layer](#presentation-and-data-layer)
-    * [Handling Parser Failures](#handling-parser-failures)
-    * [Structure](#structure)
     * [Filename Extension](#filename-extension)
+    * [Structure](#structure)
+    * [Failure Handling](#failure-handling)
+    * [Significant Elements](#significant-elements)
   * [Primer on Types](#primer-on-types)
     * [Primitive Literals](#primitive-literals)
     * [Built-in Primitive Types](#built-in-primitive-types)
@@ -38,18 +37,22 @@ Version: 0.9.0
 
 Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) syntax. Downson is an extension such that downson documents are valid GFM documents. Therefore implementors of this specification should first consult the GFM specification for guidelines.
 
-### Annotations
-
 In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations when creating this specification.
 
-### Presentation and Data Layer
+### Filename Extesion
 
-A downson document can be viewed from two perspectives:
+Downson files should the `.downson` extension.
+
+### Structure
+
+A downson document is always an *object* which object is referred to as the *top-level object*. An empty downson document is an empty object.
+
+A document can be viewed from two perspectives:
 
   * elements that influence the appearance of the output generated from the downson document form the *presentation layer*,
   * elements that influence the shape and contents of the data generated from the downson document form the *data layer*.
 
-### Handling Parser Failures
+### Failure Handling
 
 Parsers should implement the following behaviour in case of a parsing failure:
 
@@ -67,13 +70,22 @@ Even in case of a partial failure, the above guidelines should be followed. Some
 
 Although in case of a partial failure, it would be possible to generate some data from the ill-formed section of the document, this would not reflect the original intention of the user. However, the client of the parser must be informed of the issues in form of a warning or an error.
 
-### Structure
+### Significant Elements
 
-A downson document is always an *object* which object is referred to as the *top-level object*. An empty downson document is an empty object.
+A GFM element is considered to be *significant* if it influences either the *presentation* or the *data layer* of the downson document. 
 
-### Filename Extesion
+The *significant elements* are the following:
 
-Filenames of downson document should end with the `.downson` extension.
+  * [ATX headings](https://github.github.com/gfm/#atx-headings) and [Setext headings](https://github.github.com/gfm/#setext-headings),
+  * [Indented code blocks](https://github.github.com/gfm/#indented-code-blocks) and [Fenced code blocks](https://github.github.com/gfm/#fenced-code-blocks),
+  * [Paragraphs](https://github.github.com/gfm/#paragraphs),
+  * [Tables](https://github.github.com/gfm/#tables-extension-),
+  * [Ordered lists](https://github.github.com/gfm/#ordered-list),
+  * [Unordered lists](https://github.github.com/gfm/#lists) - however, they carry no special meaning: an unordered list should be parsed by simply parsing the contents inside its items,
+  * [Links](https://github.github.com/gfm/#links),
+  * [Strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) (**NOT** emphasis).
+
+Other elements are **ignored**. 
 
 ## Primer on Types
 
