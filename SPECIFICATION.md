@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.9.1
+Version: 0.10.0
 
 ## Table of Contents
 
@@ -234,7 +234,7 @@ In what follows, we define the following terms and notations:
   * The level of the previous heading is denoted as `p`.
   * The level of the new heading is denoted as `n`.
 
-A [GFM ATX Heading](https://github.github.com/gfm/#atx-headings) creates a new empty object and registers it according to the following rules:
+A [GFM ATX Heading](https://github.github.com/gfm/#atx-headings) or a [GFM Setext Heading](https://github.github.com/gfm/#setext-headings) creates a new empty object and registers it according to the following rules:
 
   * if `p = n`, then the new object is registered on the parent of the *current object*,
   * if `p > n`, then the new object is registered on the object created by a previous heading with depth `n - 1`,
@@ -272,7 +272,8 @@ syntax instead. This, however, would greatly influence the *presentation layer* 
 An *ignore alias* can be used to skip the contents until the next same- or upper-level heading entirely. The syntax of *ignore alias* is as follows:
 
 ~~~~
-## Skip me [](ignore)
+Skip me [](ignore)
+==================
 ~~~~
 
 #### Emphasis Syntax
