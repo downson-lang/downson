@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.11.0
+Version: 0.11.1
 
 ## Table of Contents
 
@@ -450,7 +450,7 @@ In this case, the *object terminator* ends the object which gets assigned to the
 A more involved example is as follows:
 
 ~~~~Markdown
-The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object:alias "http") settings, it should listen on **.port** [](right) [8080](int) with a [100](int) ms **.timeout** [](left) []($). The **.base path** [](right "basePath") should be set to [/server](string) []($). []($)The **.connection string** [](right "connection") should be set to [i:dont:know](string) for the **.database** [](left:object).
+The **.server** [](right:object) should start with the following configuration. Talking about **.HTTP** [](right:object "http") settings, it should listen on **.port** [](right) [8080](int) with a [100](int) ms **.timeout** [](left) []($). The **.base path** [](right "basePath") should be set to [/server](string) []($). []($)The **.connection string** [](right "connection") should be set to [i:dont:know](string) for the **.database** [](left:object).
 ~~~~
 
 which has the following JSON representation:
