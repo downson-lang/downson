@@ -38,7 +38,7 @@ Downson (from markDOWN Object Notation) is an extension of the [Github Flavored 
 
 In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations when creating this specification.
 
-### Filename Extesion
+### Filename Extension
 
 Downson has no special extension. The usual Markdown filename extension should be used.
 
