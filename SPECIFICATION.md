@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.8.0
+Version: 0.9.0
 
 ## Table of Contents
 
@@ -267,25 +267,16 @@ An *ignore alias* can be used to skip the contents until the next same- or upper
 
 Keys on the **current object** can be registered using the so-called *emphasis syntax* which is based on the [GFM Emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) syntax. The emphasis syntax consists of the following:
 
-  * a mandatory `.` (dot) character,
-  * a mandatory string describing the key name,
-  * either an *ignore alias* or *key metadata*.
-
-The syntax is as follows:
+  * a `.` (dot) character and the string describing the key name enclosed in a GFM Emphasis element,
+  * *key metadata* inside a GFM Inline Link element.
 
 ~~~~
-**.key-name** ignore-alias or key-metadata
+**.key-name** key-metadata
 ~~~~
 
-##### Ignore alias
+Emphasis syntax does not require the notion of *ignore alias*. If a syntactically valid (ie. starting with a dot) emphasis is read without an accompanying *key metadata*, then it is automatically ignored.
 
-Ignore alias works the same way as in the case of the *heading syntax*:
-
-~~~~
-**.skip me** [](ignore)
-~~~~
-
-Note, that the *ignore alias* is only needed, when the key would be a syntactically valid downson object key.
+Between the GFM Emphasis containing the key name and GFM Inline Link containing the key-metadata, only inline whitespaces are allowed.
 
 ##### Key metadata
 
