@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.12.0
+Version: 0.12.1
 
 ## Table of Contents
 
@@ -99,17 +99,6 @@ A literal representing a value of some primitive type (built-in or custom) is ca
 The GFM Inline Link syntax was a good fit for literals. Regarding the *presentation layer*, inline links are always highlighted, which makes them stand out from their surrounding context that is a desirable feature when defining data. In addition to that, the *link destination* and *link title* parts make it possible to store metadata influencing the *data layer* without polluting the *presentation layer*.
 
 </details>
-
-<details>
-<summary>Failure</summary>
-
-When ignoring an ill-formed *primitive literal*, a
-
-</details>
-
-#### Link Text
-
-The *link text* forms the actual literal.
 
 <details>
 <summary>Failure</summary>
