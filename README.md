@@ -20,6 +20,10 @@ Current formats embed documentation into the data.
 
 Downson inverts this principle. Data is embedded right into the documentation, offering a structured and sane approach for both the data and its documentation.
 
+Summing this up:
+
+![Roll safe your configuration!](img/roll-safe.jpg)
+
 ## Goals and non-goals
 
   * Downson aims to be easily read by **humans** and easily written by **humans**.
