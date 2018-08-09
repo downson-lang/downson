@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.12.1
+Version: 0.13.0
 
 ## Table of Contents
 
@@ -238,6 +238,11 @@ Note, that this counts as a special *value override*.
 
 Object keys can be created using any of the following two forms.
 
+In what follows, we make use of the following definitions:
+
+  * An *object key* is *unmatched* if it has no corresponding literal (of any type). An *object key* that binds to the left and introduces a new nested object is automatically matched (to the newly created nested object). 
+  * A *literal* (of any type) is unmatched if it has no corresponding *object key*.
+
 #### Header Syntax
 
 In what follows, we define the following terms and notations:
@@ -321,6 +326,7 @@ Skip me [](ignore)
 
 **Ambiguous Sytnax**
 
+  * * If the *link text* is not empty, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
   * If the `ignore` marker is followed by some valid *link text*, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
 
 </details>
@@ -346,6 +352,16 @@ Between the GFM Emphasis containing the key name and GFM Inline Link containing 
 **Ambiguous Syntax**
 
   * If the text inside the emphasis start with a dot, but the emphasis is not followed by *key metadata*, then the *object key* is *ill-formed*.
+
+**Implementation Specific**
+
+  * If two consecutive *unmatched object keys* are detected, then the behaviour is implementation specific:
+
+      * ignore both keys,
+      * ignore the first key,
+      * ignore the second key.
+
+    However, regardless of the exact behaviour, an *interpretation error* must be emitted.
 
 </details>
 
@@ -380,6 +396,8 @@ where the square brackets (except for the first pair) denote optional content.
     
     then the *object key* is *ill-formed*.
   * If the *link text* is not empty, then the *object key* is *ill-formed*.
+  * If a *key metadata* has no corresponding *key name*, then the *key metadata* is ignored.
+  * Inline *ignore alias* and *key alias* elements should be ignored.
 
 </details>
 
@@ -462,15 +480,21 @@ which has the following JSON representation:
 <details>
 <summary>Failure</summary>
 
-**Ambiguous Syntax**
+**Implementation Specific**
 
-  * If a key is already registered on an object, then the current *object key* is *ill-formed*.
+  * If a key is already registered on an object, then the behaviour is implementation specific:
+
+      * ignore the previous value,
+      * ignore the current value.
+
+    However, regardless of the exact behaviour, an *ambiguous syntax* must be emitted.
 
 **Interpretation Error**
 
   * At the end of the document, all unterminated nested objects should be closed, and registered with the appropriate keys.
   * At the next header, all unterminated nested objects should be closed, and registered with the appropriate keys.
   * If a *left-binding* *object key* is detected witout a matching *object terminator*, then the *object key* is *ill-formed*. However, already registered keys and values should remain intact.
+  * If a nested object is terminated before matching all of the contained literals or keys, then the unmatched elements should be ignored.
 
 </details>
 
@@ -609,6 +633,26 @@ Note, that this counts as a special *value override*, therefore the *link text* 
 #### GFM Ordered List Syntax
 
 In simpler cases, mostly when storing primitive values or other lists in a list, the [GFM Ordered List](https://github.github.com/gfm/#ordered-list) syntax can be used. The contents of a GFM list element are inserted into the list.
+
+Precisely, each list item should contain a single *literal* (of any type), that is going to be inserted into the resulting downson list.
+
+<details>
+<summary>Failure</summary>
+
+**Implementation Specific**
+
+  * If a list item contains multiple literals, then the behaviour is implementation specific:
+
+      * ignore the previous value,
+      * ignore the current value.
+
+    However, regardless of the exact behaviour, an *ambiguous syntax* must be emitted.
+
+**Interpretation Error**
+
+  * If an *object key* is detected inside a list item, but the key has no containing nested object, then it is *ill-formed*.
+
+</details>
 
 #### GFM Table Syntax
 
