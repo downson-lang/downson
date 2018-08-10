@@ -1,5 +1,7 @@
 # Tests [](alias "tests")
 
+*The data layer of this file is also available in JSON: [TEST.json](TESTS.json).*
+
 Downson has an official test suite to ensure that different implementations share a common behaviour.
 
 This file contains the listing of the test cases. For each case, this file defines the following:

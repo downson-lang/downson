@@ -1,0 +1,66 @@
+{
+    "tests": {
+        "cases": [
+            {
+                "name": "Empty",
+                "filename": "empty",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Nesting with Heading",
+                "filename": "nesting-with-heading",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Nesting with Emphasis",
+                "filename": "nesting-with-emphasis",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Nesting with Emphasis and Unordered Lists",
+                "filename": "nesting-with-emphasis-and-unordered-lists",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Nesting Lists",
+                "filename": "nesting-lists",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Lists with Table Syntax",
+                "filename": "lists-with-table-syntax",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Integer Literals",
+                "filename": "integer-literals",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "String Literals",
+                "filename": "string-literals",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Boolean Literals",
+                "filename": "boolean-literals",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Float Literals",
+                "filename": "float-literals",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "Value Overrides",
+                "filename": "value-overrides",
+                "hasInterpretationErrors": false
+            },
+            {
+                "name": "ECC",
+                "filename": "ecc",
+                "hasInterpretationErrors": false
+            }
+        ]
+    }
+}
