@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.13.0
+Version: 0.14.0
 
 ## Table of Contents
 
@@ -650,9 +650,40 @@ Precisely, each list item should contain a single *literal* (of any type), that 
 
 **Interpretation Error**
 
-  * If an *object key* is detected inside a list item, but the key has no containing nested object, then it is *ill-formed*.
+  * If an *object key* is detected inside a list item and the following are true
+      * it has no `object` metadata,
+      * it has no containing nested object,
+    then the *object key* is *ill-formed*.
 
 </details>
+
+##### Objects as List Elements
+
+Objects can be placed into lists created with the GFM Ordered List syntax using either of the following methods:
+
+  * Placing aan empty object literal into the GFM Ordered List element,
+  * Creating a new nested object inside the GFM Ordered List element using the `object` key metadata. The actual key is going to be **ignored** and the created nested object is going to be inserted into the list. Example:
+
+      ~~~~
+      A list of **.dogs** [](right) in the doggy daycare:
+
+        1. **..** [](right:object) **.Name** [](right) [Max](string), **.Age** [](right) [5](int) []($)
+        1. **..** [](right:object) **.Name** [](right) [Daisy](string), **.Age** [](right) [7](int) []($)
+      ~~~~
+
+    The above downson snipped defines the following *data layer*:
+
+      ~~~~JSON
+      {
+        "dogs": [{
+            "Name": "Max",
+            "Age": 5
+          }, {
+            "Name": "Daisy",
+            "Age": 7
+          }]
+      }
+      ~~~~
 
 #### GFM Table Syntax
 
