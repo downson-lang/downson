@@ -1,0 +1,36 @@
+{
+    "emptyList": [],
+    "emptyObjects": [
+        {},
+        {},
+        {}
+    ],
+    "single": [
+        {
+            "key": "key1",
+            "value": 10
+        }
+    ],
+    "involved": [
+        {
+            "key": "key1",
+            "value": 10,
+            "rating": 6.5
+        },
+        {
+            "key": "key2",
+            "value": 11,
+            "rating": 6.6
+        },
+        {
+            "key": "key3",
+            "value": 12,
+            "rating": 6.7
+        },
+        {
+            "key": "key4",
+            "value": 13,
+            "rating": 6.8
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "strings": [
+        "Hello,",
+        "World!",
+        "repetitio est mater studiorum"
+    ],
+    "backtick": "Hello,\nWorld!",
+    "tilde": "Hello,\nWorld!",
+    "indent": "Hello,\nWorld!"
+}

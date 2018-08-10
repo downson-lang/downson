@@ -1,0 +1,167 @@
+{
+    "benchmarks": {
+        "java": {
+            "scenarios": {
+                "affineMultiplication": {
+                    "requirements": [
+                        {
+                            "length": 128,
+                            "max": 3,
+                            "avg": 2
+                        },
+                        {
+                            "length": 512,
+                            "max": 5,
+                            "avg": 3
+                        },
+                        {
+                            "length": 1024,
+                            "max": 10,
+                            "avg": 5
+                        }
+                    ],
+                    "cases": [
+                        {
+                            "length": 128,
+                            "warmup": 5,
+                            "test": 20
+                        },
+                        {
+                            "length": 512,
+                            "warmup": 5,
+                            "test": 20
+                        },
+                        {
+                            "length": 1024,
+                            "warmup": 10,
+                            "test": 20
+                        }
+                    ]
+                },
+                "jacobianDouble": {
+                    "requirements": [
+                        {
+                            "length": 128,
+                            "max": 1,
+                            "avg": 0.55
+                        },
+                        {
+                            "length": 512,
+                            "max": 2,
+                            "avg": 1.25
+                        },
+                        {
+                            "length": 1024,
+                            "max": 3,
+                            "avg": 1.75
+                        }
+                    ],
+                    "cases": [
+                        {
+                            "length": 128,
+                            "warmup": 5,
+                            "test": 20
+                        },
+                        {
+                            "length": 512,
+                            "warmup": 5,
+                            "test": 20
+                        },
+                        {
+                            "length": 1024,
+                            "warmup": 5,
+                            "test": 20
+                        }
+                    ]
+                },
+                "encryptDecrypt": {
+                    "common": {
+                        "warmup": 10,
+                        "test": 20,
+                        "metrics": [
+                            "AverageTime",
+                            "SampleTime"
+                        ],
+                        "file": "./config/benchmarks/java/encrypt-decrypt"
+                    }
+                }
+            }
+        },
+        "c": {
+            "scenarios": {
+                "affineMultiplication": {
+                    "requirements": [
+                        {
+                            "length": 128,
+                            "max": 1,
+                            "avg": 0.5
+                        },
+                        {
+                            "length": 512,
+                            "max": 2,
+                            "avg": 1.1
+                        },
+                        {
+                            "length": 1024,
+                            "max": 3,
+                            "avg": 1.66
+                        }
+                    ],
+                    "cases": [
+                        {
+                            "length": 128,
+                            "test": 10
+                        },
+                        {
+                            "length": 512,
+                            "test": 10
+                        },
+                        {
+                            "length": 1024,
+                            "test": 15
+                        }
+                    ]
+                },
+                "jacobianDouble": {
+                    "requirements": [
+                        {
+                            "length": 128,
+                            "max": 0.45,
+                            "avg": 0.23
+                        },
+                        {
+                            "length": 512,
+                            "max": 0.85,
+                            "avg": 0.43
+                        },
+                        {
+                            "length": 1024,
+                            "max": 1.25,
+                            "avg": 0.73
+                        }
+                    ],
+                    "cases": [
+                        {
+                            "length": 128,
+                            "test": 10
+                        },
+                        {
+                            "length": 512,
+                            "test": 10
+                        },
+                        {
+                            "length": 1024,
+                            "test": 15
+                        }
+                    ]
+                },
+                "encryptDecrypt": {
+                    "common": {
+                        "test": 30,
+                        "file": "./config/benchmarks/c/encrypt-decrypt"
+                    }
+                }
+            }
+        }
+    }
+}

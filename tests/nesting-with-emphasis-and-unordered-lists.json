@@ -1,0 +1,28 @@
+{
+    "Level1.1": {
+        "Level2.1": {}
+    },
+    "Level1.2": {
+        "Level2.1": {},
+        "Level2.2": {},
+        "Level2.3": {}
+    },
+    "Level1.3": {
+        "Level2.1": {
+            "Level3.1": {
+                "Level4.1": {
+                    "Level5.1": {
+                        "Level6.1": {},
+                        "Level6.2": {}
+                    },
+                    "Level5.2": {
+                        "Level6.1": {},
+                        "Level6.2": {}
+                    }
+                },
+                "Level4.2": {}
+            }
+        },
+        "Level2.2": {}
+    }
+}

@@ -1,0 +1,5 @@
+**.angle** [](right) [pi](float "3.14")
+**.count** [](right) [ten](int "10")
+**.errors** [](right) [none](list "empty")
+**.ready** [](right) [yes](boolean "true")
+**.str** [](right) [don't do this](string "please")

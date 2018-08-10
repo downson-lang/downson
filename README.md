@@ -12,6 +12,10 @@ Read the specification here: [SPECIFICATION.md](SPECIFICATION.md).
 
 Examples can be found in the [examples](examples) directory.
 
+**Tests**
+
+This repository contains a test suite that can be used to exercise downson implementations. The description of the test cases can be found in the [TESTS.md](TESTS.md) downson file.
+
 ## Motivation
 
 Downson was created out of pure frustration. Applications ship with tons of configuration and data files that contain crucial settings and information. Yet, correctly documenting these is a horrible burden. One can write the documentation in a separate file, exposing themselves to an increased risk of diverging settings and documentation, or  write some sort of rudimentary documentation using in-place comments (assuming, the spec has them).
