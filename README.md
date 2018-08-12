@@ -8,17 +8,62 @@ Downson makes it possible to embed typed and structured data into Markdown docum
 
 Read the specification here: [SPECIFICATION.md](SPECIFICATION.md).
 
-**Examples**
+## Examples
 
-Examples can be found in the [examples](examples) directory.
+  * The classic "Hello, World!" example:
+    * downson
+      ~~~~Markdown
+      My favorite **.greeting** [](right) is "[Hello, world!](string)".
+      ~~~~
+    * JSON
+      ~~~~JSON
+      {
+        "greeting": "Hello, World!"
+      }
+      ~~~~
+  * Configuring available and default languages:
+    * downson
+      ~~~~Markdown
+      The available **.languages** [](right) are the following:
 
-**Tests**
+        1. [Hungarian](string "hun")
+        1. [English](string "eng")
+        1. [German](string "ger")
 
-This repository contains a test suite that can be used to exercise downson implementations. The description of the test cases can be found in the [TESTS.md](TESTS.md) downson file.
+      The **.default language** [](right "default") is set to [Hungarian](string "hun").
+      ~~~~
+    * JSON
+      ~~~~JSON
+      {
+        "languages": [
+          "hun",
+          "eng",
+          "ger"
+        ],
+        "default": "hun"
+      }
+      ~~~~
+  * Describing your PC to your friend:
+    * downson
+      ~~~~Markdown
+        - Let me show you this **.bad boy** [](right:object "configuration")! It has [8](int) **.cores** [](left) and [16](int) gigs of **.memory** [](left)! []($) **.Impressive** [](right "isImpressiv"), huh? 
+        - [Of course](boolean, "true"), bro!
+      ~~~~
+    * JSON
+      ~~~~JSON
+      {
+        "configuration": {
+          "cores": 8,
+          "memory": 16
+        },
+        "isImpressive": true
+      }
+      ~~~~
+Larger examples can be found in the [examples](examples) directory.
 
 ## Motivation
 
-Downson was created out of pure frustration. Applications ship with tons of configuration and data files that contain crucial settings and information. Yet, correctly documenting these is a horrible burden. One can write the documentation in a separate file, exposing themselves to an increased risk of diverging settings and documentation, or  write some sort of rudimentary documentation using in-place comments (assuming, the spec has them).
+Downson was created out of pure frustration. Applications ship with tons of configuration and data files that contain crucial settings and information. Yet, correctly documenting these is a horrible burden. One can write the documentation in a separate file, exposing themselves to an increased risk of diverging settings and documentation, or write some sort of rudimentary documentation using in-place comments (assuming, the spec has them).
 
 Current formats embed documentation into the data.
 
@@ -26,12 +71,20 @@ Downson inverts this principle. Data is embedded right into the documentation, o
 
 Summing this up:
 
+<div align="center">
+
 ![Roll safe your configuration!](img/roll-safe.jpg)
+
+</div>
 
 ## Goals and non-goals
 
   * Downson aims to be easily read by **humans** and easily written by **humans**.
   * Downson is **NOT** a data exchange format. It is best suited for configuration and other read-only data files.
+
+## Test Suite
+
+This repository contains a test suite that can be used to exercise downson implementations. The description of the test cases can be found in the [TESTS.md](TESTS.md) downson file.
 
 ## Implementations
 
