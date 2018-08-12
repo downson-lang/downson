@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.15.0
+Version: 0.15.1
 
 ## Table of Contents
 
@@ -34,15 +34,15 @@ Version: 0.15.0
 
 ## Preliminaries
 
-Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) specification. Downson does not add new elements to the Markdown syntax, but redefines their semantics to represent arbitrary data in a format that is easily readable for both humans and machines, with the emphasis on humans.
+Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) specification. Downson does not add new elements to the Markdown syntax but redefines their semantics to represent arbitrary data in a format that is easily readable for both humans and machines, with the emphasis on humans.
 
-Most of the definitions in this document make use of those in the GFM specificiation, therefore implementors should first consult the GFM specification for guidelines.
+Most of the definitions in this document make use of those in the GFM specification, therefore implementors should first consult the GFM specification for guidelines.
 
 In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations made when creating this specification.
 
 ### Filename Extension
 
-Downson has no special extension. The usual Markdown filename extension should be used.
+Downson has no special extension. The usual Markdown filename extension is preferred.
 
 ### Structure
 
@@ -76,12 +76,12 @@ A *well-formed element* is a *significant element* that can be processed as a do
 
 ### Failure Handling
 
-Implementations should resort themselves to a highly flexible failure handling approach. This is a consequence of the fact, that downson is the extension of an existing format. To embrace a user-friendly behaviour, implementations should always produce at least an empty object as the result of the parsing process. On the other hand, all issues should be reported to the clients, sorted into two categories:
+Implementations should resort themselves to a highly flexible failure handling approach. This is a consequence of the fact, that downson is the extension of an existing format. To embrace a user-friendly behavior, implementations should always produce at least an empty object as the result of the parsing process. On the other hand, all issues should be reported to the clients, sorted into two categories:
 
   * **Ambiguous syntax**: Signals an *ill-formed* element. Failures of this kind should be treated as hints and light warnings. In most cases, *ill-formed* elements are just simple Markdown elements, that never intended to be *well-formed* downson elements. If at the end of the processing, only issues caused by *ambiguous syntax* are present, then the *data layer* might still be completely valid.
   * **Downson interpretation error**: Signals an illegal combination of *well-formed* elements. Failures of this kind should be treated as serious warnings and errors. The presence of an *interpretation error* is almost always a sign of a *data-layer* corruption.
 
-The exact failure handling behaviour is defined in *Failure* blocks.
+The exact failure handling behavior is defined in *Failure* blocks.
 
 ## Primer on Types
 
@@ -122,7 +122,7 @@ The *link destination* contains the *type hint* which describes the type of the 
 <details>
 <summary>Failure</summary>
 
-**Ambigouous Syntax**
+**Ambiguous Syntax**
 
   * If the *type hint* describes an unknown type, then the *primitive literal* is *ill-formed*.
 
@@ -140,7 +140,7 @@ A *value override* has the following properties:
 
 The *value override* feature was inspired by the two-faced (*presentation* and *data layer*) nature of downson documents. Situations can arise, when using an alias (override) for the same literal would increase the readability of the *presentation layer* but at the same time, the *data layer* should not be altered. Booleans make for a good example. Consider a downson document written in Hungarian. Hindering the document with Boolean literals like `true` or `false` would greatly perturb the *presentation layer*. Thanks to *value overrides*, one is not forced to use the pre-defined literals in the *presentation layer*.
 
-The *link title* feature is a perfect fit for *value overrides*. It is optional, just as *value overrides* are. By default, it does not modify directly the *presentation layer*, but is only visible when the user hovers the mouse over an inline link.
+The *link title* feature is a perfect fit for *value overrides*. It is optional, just as *value overrides* are. By default, it does not modify directly the *presentation layer* but is only visible when the user hovers the mouse over an inline link.
 
 One should be aware, however, not to abuse the *value override* syntax, because overusing or misusing it can create a huge gap between the two layers.
 
@@ -187,9 +187,9 @@ Downson has the following built-in primitive types:
 
 When deciding, which primitive types to support out of the box, we wanted to take a conservative approach. Instead of trying to "get right" types for dates, currencies and such, we decided not to include them in the specification at all. The reasoning behind this decision is the following.
 
-Having a small set of built-in types makes the specification more concise and easier to implement. Ease of implementation is very important in the case of an emerging standard. Moreover, there are several programming languages that does not have built-in support for dates or the constant `null`. It seemed like a sensible choice, to miss out types like these, if client environments do the same.
+Having a small set of built-in types makes the specification more concise and easier to implement. Ease of implementation is very important in the case of an emerging standard. Moreover, there are several programming languages that do not have built-in support for dates or the constant `null`. It seemed like a sensible choice, to miss out types like these if client environments do the same.
 
-However, we are aware, that a modern standard should provide a way to represent the types we have intentionally left out. That's why downson has the *custom primitive types* feature. Although, this might lead to the fragmentation of the downson ecosystem, we believe that for example community-driven extensions for other types can be a better solution than including them right into the standard and therefore requiring every implementation to support them.
+However, we are aware, that a modern standard should provide a way to represent the types we have intentionally left out. That's why downson has the *custom primitive types* feature. Although this might lead to the fragmentation of the downson ecosystem, we believe that for example, community-driven extensions for other types can be a better solution than including them right into the standard and therefore requiring every implementation to support them.
 
 </details>
 
@@ -261,7 +261,7 @@ A [GFM ATX Heading](https://github.github.com/gfm/#atx-headings) or a [GFM Setex
 
 Only the following two forms are considered to be *well-formed*:
 
-  * a heading containing simple text only (ie. no emphasis or other inline elements). In this case the text is trimmed from both the left and the right and is taken as the key of the newly created object.
+  * a heading containing simple text only (ie. no emphasis or other inline elements). In this case, the text is trimmed from both the left and the right and is taken as the key of the newly created object.
   * a heading containing simple text followed by a single *key alias* or a single *ignore alias* only.
 
 Subsequent keys defined with the *emphasis syntax* are registered on the *current object*, unless otherwise noted.
@@ -297,7 +297,7 @@ The key is set to be the string between the double-quotes.
 ## [Heading Text](alias "key-alias")
 ~~~~
 
-syntax instead. This, however, would greatly influence the *presentation layer* and, at the same time, would be too similar to the *primitive literal* syntax. These are the reasons, that made us to go with the invisible link syntax.
+syntax instead. This, however, would greatly influence the *presentation layer* and, at the same time, would be too similar to the *primitive literal* syntax. These are the reasons, that made us go with the invisible link syntax.
 
 </details>
 
@@ -326,7 +326,7 @@ Skip me [](ignore)
 <details>
 <summary>Failure</summary>
 
-**Ambiguous Sytnax**
+**Ambiguous Syntax**
 
   * If the *link text* is not empty, the heading is *ill-formed* and all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
   * If the `ignore` marker is followed by some valid *link title*, then all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
@@ -357,13 +357,13 @@ Between the GFM Emphasis containing the key name and GFM Inline Link containing 
 
 **Implementation Specific**
 
-  * If two consecutive *unmatched object keys* are detected, then the behaviour is implementation specific:
+  * If two consecutive *unmatched object keys* are detected, then the behavior is implementation specific:
 
       * ignore both keys,
       * ignore the first key,
       * ignore the second key.
 
-  However, regardless of the exact behaviour, an *interpretation error* must be emitted.
+  However, regardless of the exact behavior, an *interpretation error* must be emitted.
 
 </details>
 
@@ -371,7 +371,7 @@ Between the GFM Emphasis containing the key name and GFM Inline Link containing 
 
 The key metadata is constructed as follows:
 
-  * *link destionation* (strictly in this order, separated by `:` (colon) characters)
+  * *link destination* (strictly in this order, separated by `:` (colon) characters)
       * the mandatory binding direction of the key, which can be either `left` or `right`,
       * optionally whether the key introduces a new nested object or not,
   * *link title*
@@ -484,18 +484,18 @@ which has the following JSON representation:
 
 **Implementation Specific**
 
-  * If a key is already registered on an object, then the behaviour is implementation specific:
+  * If a key is already registered on an object, then the behavior is implementation specific:
 
       * ignore the previous value,
       * ignore the current value.
 
-    However, regardless of the exact behaviour, an *ambiguous syntax* must be emitted.
+    However, regardless of the exact behavior, an *ambiguous syntax* must be emitted.
 
 **Interpretation Error**
 
   * At the end of the document, all unterminated nested objects should be closed, and registered with the appropriate keys.
   * At the next header, all unterminated nested objects should be closed, and registered with the appropriate keys.
-  * If a *left-binding* *object key* is detected witout a matching *object terminator*, then the *object key* is ignored. However, already registered keys and values should remain intact.
+  * If a *left-binding* *object key* is detected without a matching *object terminator*, then the *object key* is ignored. However, already registered keys and values should remain intact.
   * If a nested object is terminated before matching all of the contained literals or keys, then the unmatched elements should be ignored.
 
 </details>
@@ -562,7 +562,7 @@ Implementations are expected to provide at least 64 bits of storage space for si
 
 **Type hint**: `float`
 
-The floating-point number type can used to represent real numbers. Implementations should handle downson's floating-point numbers as IEEE754 binary64 floating-point values.
+The floating-point number type can be used to represent real numbers. Implementations should handle downson's floating-point numbers as IEEE754 binary64 floating-point values.
 
 ### Syntax
 
@@ -620,7 +620,7 @@ Represents a truth value. Boolean has only two valid literal values:
 
 **Type hint**: `list` - only for the empty list literal
 
-A list is an ordered container of heterogenous values. A list can contain values of any other type, including the list type itself.
+A list is an ordered container of heterogeneous values. A list can contain values of any other type, including the list type itself.
 
 ### Syntax
 
@@ -643,12 +643,12 @@ Precisely, each list item should contain a single value (of any type), that is g
 
 **Implementation Specific**
 
-  * If a list item contains multiple values, then the behaviour is implementation specific:
+  * If a list item contains multiple values, then the behavior is implementation specific:
 
       * ignore the previous value,
       * ignore the current value.
 
-    However, regardless of the exact behaviour, an *ambiguous syntax* must be emitted.
+    However, regardless of the exact behavior, an *ambiguous syntax* must be emitted.
 
 **Interpretation Error**
 
@@ -696,7 +696,7 @@ When one would like to store objects with the same keys in a list, the [GFM Tabl
   * The same key may hold values of different types in different rows.
 
 The following heading cells are considered *well-formed*:
-  * a cell containing simple text only (ie. no emphasis or other inline elements). In this case the text is trimmed from both the left and the right and is taken as the key.
+  * a cell containing simple text only (ie. no emphasis or other inline elements). In this case, the text is trimmed from both the left and the right and is taken as the key.
   * a cell containing simple text followed by a single key alias or a single ignore alias only.
 
 Normal (ie. non-heading) cells can only contain a single *primitive literal*
