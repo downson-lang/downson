@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.14.0
+Version: 0.15.0
 
 ## Table of Contents
 
@@ -34,9 +34,11 @@ Version: 0.14.0
 
 ## Preliminaries
 
-Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) syntax. Downson is an extension such that downson documents are valid GFM documents. Therefore implementors of this specification should first consult the GFM specification for guidelines.
+Downson (from markDOWN Object Notation) is an extension of the [Github Flavored Markdown](https://github.github.com/gfm/) specification. Downson does not add new elements to the Markdown syntax, but redefines their semantics to represent arbitrary data in a format that is easily readable for both humans and machines, with the emphasis on humans.
 
-In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations when creating this specification.
+Most of the definitions in this document make use of those in the GFM specificiation, therefore implementors should first consult the GFM specification for guidelines.
+
+In the subsequent sections, *Annotation* blocks are present to highlight the design decisions and considerations made when creating this specification.
 
 ### Filename Extension
 
@@ -53,31 +55,31 @@ A document can be viewed from two perspectives:
 
 ### Significant, Well-formed and Ill-formed Elements
 
-A GFM element is considered to be *significant* if it might influence either the *presentation* or the *data layer* of the downson document. 
+A GFM element is considered to be *significant* if there is downson semantics assigned to it.
 
 The *significant elements* are the following:
 
   * [ATX headings](https://github.github.com/gfm/#atx-headings) and [Setext headings](https://github.github.com/gfm/#setext-headings),
   * [Indented code blocks](https://github.github.com/gfm/#indented-code-blocks) and [Fenced code blocks](https://github.github.com/gfm/#fenced-code-blocks),
-  * [Paragraphs](https://github.github.com/gfm/#paragraphs),
-  * [Tables](https://github.github.com/gfm/#tables-extension-),
-  * [Ordered lists](https://github.github.com/gfm/#ordered-list),
-  * [Unordered lists](https://github.github.com/gfm/#lists) - however, they carry no special meaning: an unordered list should be parsed by simply parsing the contents inside its items,
   * [Links](https://github.github.com/gfm/#links),
-  * [Strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) (**NOT** emphasis).
+  * [Ordered lists](https://github.github.com/gfm/#ordered-list),
+  * [Paragraphs](https://github.github.com/gfm/#paragraphs),
+  * [Strong emphasis](https://github.github.com/gfm/#emphasis-and-strong-emphasis) (**NOT** emphasis),
+  * [Tables](https://github.github.com/gfm/#tables-extension-),
+  * [Unordered lists](https://github.github.com/gfm/#lists) - however, they carry no special meaning: an unordered list should be parsed by simply parsing the contents inside its items.
 
-Other elements are **ignored**.
+Other elements of the Markdown syntax are **ignored**.
 
-A *well-formed element* is a *significant element*, that can be successfully interpreted as either an *object key* or a value of some type. *Significant elements* which are not *well-formed* are said to be *ill-formed*. *Ill-formed* elements are **ignored**.
+A *well-formed element* is a *significant element* that can be processed as a downson element without failures. *Well-formed elements* influence the *presentation* or the *data layer* of the downson document.
+
+*Significant elements* which are not *well-formed* are said to be *ill-formed*. *Ill-formed* elements are **ignored**.
 
 ### Failure Handling
 
 Implementations should resort themselves to a highly flexible failure handling approach. This is a consequence of the fact, that downson is the extension of an existing format. To embrace a user-friendly behaviour, implementations should always produce at least an empty object as the result of the parsing process. On the other hand, all issues should be reported to the clients, sorted into two categories:
 
-  * ambiguous syntax, ie. when the intention in the document might have been unclear,
-  * downson interpretation errors.
-
-If at the end of the processing, only issues caused by ambiguous syntax are present, then the *data layer* might still be completely valid. Respectively, the presence of interpretation errors is almost always a sign of a *data layer* corruption.
+  * **Ambiguous syntax**: Signals an *ill-formed* element. Failures of this kind should be treated as hints and light warnings. In most cases, *ill-formed* elements are just simple Markdown elements, that never intended to be *well-formed* downson elements. If at the end of the processing, only issues caused by *ambiguous syntax* are present, then the *data layer* might still be completely valid.
+  * **Downson interpretation error**: Signals an illegal combination of *well-formed* elements. Failures of this kind should be treated as serious warnings and errors. The presence of an *interpretation error* is almost always a sign of a *data-layer* corruption.
 
 The exact failure handling behaviour is defined in *Failure* blocks.
 
@@ -89,14 +91,14 @@ In the following subsections, the types provided by downson are described.
 
 A literal representing a value of some primitive type (built-in or custom) is called a *primitive literal*. The syntax of *primitive literals* makes use of the [GFM Inline Link](https://github.github.com/gfm/#inline-link) syntax as follows:
 
-  * *link text* is interpreted as the actual literal,
+  * *link text* is interpreted as the character sequence corresponding to the actual literal,
   * *link destination* contains the mandatory *type hint*,
   * the optional *link title* can contain a *value override*.
 
 <details>
 <summary>Annotation</summary>
 
-The GFM Inline Link syntax was a good fit for literals. Regarding the *presentation layer*, inline links are always highlighted, which makes them stand out from their surrounding context that is a desirable feature when defining data. In addition to that, the *link destination* and *link title* parts make it possible to store metadata influencing the *data layer* without polluting the *presentation layer*.
+The GFM Inline Link syntax was a good fit for literals. Regarding the *presentation layer*, inline links are always highlighted, which makes them stand out from their surrounding context that is a desirable feature when defining data. In addition to that, the *link destination* and *link title* parts make it possible to store metadata influencing the *data layer* without directly polluting the *presentation layer*.
 
 </details>
 
@@ -109,7 +111,7 @@ The GFM Inline Link syntax was a good fit for literals. Regarding the *presentat
 
 **Interpretation Error**
 
-  * If the *type hint* describes a known type but neither the *link text*, nor the *value override* describe a valid literal of that type, then the *primitive literal* is *ill-formed* and both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
+  * If the *type hint* describes a known type but neither the *link text*, nor the *value override* describe a valid literal of that type, then both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
 
 </details>
 
@@ -136,54 +138,54 @@ A *value override* has the following properties:
 <details>
 <summary>Annotation</summary>
 
-The *value override* feature was inspired by the two-faced (*presentation* and *data layer*) nature of downson documents. Situations can arise, when using an alias (override) for the same literal would increase the readability of the *presentation layer* but at the same time, the *data layer* should not be altered. Booleans make for a good example. Consider a downson document written in Hungarian. Hindering the document with Booleans literals like `true` or `false` would greatly perturb the *presentation layer*. Thanks to *value overrides*, one is not forced to use the well-formed *primitive literals* in the *presentation layer*.
+The *value override* feature was inspired by the two-faced (*presentation* and *data layer*) nature of downson documents. Situations can arise, when using an alias (override) for the same literal would increase the readability of the *presentation layer* but at the same time, the *data layer* should not be altered. Booleans make for a good example. Consider a downson document written in Hungarian. Hindering the document with Boolean literals like `true` or `false` would greatly perturb the *presentation layer*. Thanks to *value overrides*, one is not forced to use the pre-defined literals in the *presentation layer*.
 
 The *link title* feature is a perfect fit for *value overrides*. It is optional, just as *value overrides* are. By default, it does not modify directly the *presentation layer*, but is only visible when the user hovers the mouse over an inline link.
 
-One should be aware, however, not to abuse the *value override* syntax, because overusing or misusing it can create a huge gap between the *presentation layer* and *data layer*.
+One should be aware, however, not to abuse the *value override* syntax, because overusing or misusing it can create a huge gap between the two layers.
 
 </details>
 
 #### Examples
 
-Define the string `Hello, World!`:
+  * Define the string `Hello, World!`:
 
-~~~~
-[Hello, World!](string)
-~~~~
+    ~~~~
+    [Hello, World!](string)
+    ~~~~
 
-Define the integer value `42`:
+  * Define the integer value `42`:
 
-~~~~
-[42](int)
-~~~~
+    ~~~~
+    [42](int)
+    ~~~~
 
-*Value overrides* for booleans:
+  * *Value overrides* for booleans:
 
-~~~~
-[vrai](bool "true")
-[faux](bool "false")
-~~~~
+    ~~~~
+    [vrai](bool "true")
+    [faux](bool "false")
+    ~~~~
 
-Float *value override*:
+  * Float *value override*:
 
-~~~~
-[π](float "3.14")
-~~~~
+    ~~~~
+    [π](float "3.14")
+    ~~~~
 
 ### Built-in Primitive Types
 
 Downson has the following built-in primitive types:
 
-  * string,
-  * signed integer,
-  * floating-point number,
-  * boolean.
+  * string – `string`,
+  * signed integer – `int`,
+  * floating-point number – `float`,
+  * boolean – `boolean`.
 
 <details>
 <summary>Annotation</summary>
 
-When deciding, which primitive types to support out of the box, we wanted to take a conservative approach. Instead of trying to "get right" types for dates, currencies and such, we decided not to include them in the specification at all. The reasoning behing this decision is the following.
+When deciding, which primitive types to support out of the box, we wanted to take a conservative approach. Instead of trying to "get right" types for dates, currencies and such, we decided not to include them in the specification at all. The reasoning behind this decision is the following.
 
 Having a small set of built-in types makes the specification more concise and easier to implement. Ease of implementation is very important in the case of an emerging standard. Moreover, there are several programming languages that does not have built-in support for dates or the constant `null`. It seemed like a sensible choice, to miss out types like these, if client environments do the same.
 
@@ -193,7 +195,7 @@ However, we are aware, that a modern standard should provide a way to represent 
 
 ### Custom Primitive Types
 
-On top of the built-in primitive types, custom primitive types can be added to downson.
+In addition to the built-in primitive types, custom primitive types can be added to downson.
 
 An implementation of the downson specification is **required** to provide hooks for user-defined code to parse and process *primitive literals* of custom primitive types.
 
@@ -212,7 +214,7 @@ The syntax for custom primitive type names are defined as follows:
 
 Complex types differ from primitive types in the following aspects:
 
-  * apart from some edge-cases, values of complex types cannot be represented by literals,
+  * apart from some edge-cases, values of complex types cannot be represented by *primitive literals*,
   * as a consequence, *value override* is not defined for complex types.
 
 Downson supports the following built-in complex types:
@@ -236,12 +238,12 @@ An empty object can be represented by the following literal syntax:
 
 Note, that this counts as a special *value override*.
 
-Object keys can be created using any of the following two forms.
-
 In what follows, we make use of the following definitions:
 
-  * An *object key* is *unmatched* if it has no corresponding literal (of any type). An *object key* that binds to the left and introduces a new nested object is automatically matched (to the newly created nested object). 
-  * A *literal* (of any type) is unmatched if it has no corresponding *object key*.
+  * An *object key* is *unmatched* if it has no corresponding value (of any type). An *object key* that binds to the left and introduces a new nested object is automatically matched (to the newly created nested object).
+  * A value (of any type) is unmatched if it has no corresponding *object key*.
+
+Object keys can be created using any of the following two forms.
 
 #### Header Syntax
 
@@ -254,13 +256,13 @@ In what follows, we define the following terms and notations:
 A [GFM ATX Heading](https://github.github.com/gfm/#atx-headings) or a [GFM Setext Heading](https://github.github.com/gfm/#setext-headings) creates a new empty object and registers it according to the following rules:
 
   * if `p = n`, then the new object is registered on the parent of the *current object*,
-  * if `p > n`, then the new object is registered on the object created by a previous heading with depth `n - 1`,
-  * if `n < p`, where `p - n = 1` then the new object is registered on the *current object*. Cases when `p - n > 1` are not permitted.
+  * if `p > n`, then the new object is registered on the object created by the first previous heading, such that its level is equal to `n - 1`. The level of the `top-level` object is defined to be `0`. 
+  * if `p < n`, where `n - p = 1` then the new object is registered on the *current object*. Cases when `n - p > 1` are not permitted.
 
-Only the following two forms are considered to be valid instances of the *header syntax*:
+Only the following two forms are considered to be *well-formed*:
 
   * a heading containing simple text only (ie. no emphasis or other inline elements). In this case the text is trimmed from both the left and the right and is taken as the key of the newly created object.
-  * a heading containing simple text followed by a single key alias or a single ignore alias only.
+  * a heading containing simple text followed by a single *key alias* or a single *ignore alias* only.
 
 Subsequent keys defined with the *emphasis syntax* are registered on the *current object*, unless otherwise noted.
 
@@ -269,22 +271,22 @@ Subsequent keys defined with the *emphasis syntax* are registered on the *curren
 
 **Ambiguous Syntax**
 
-  * If the `n < p` where `p - n = 1` nesting rule is violated, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
-  * If the heading is of invalid syntax, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+  * If the `n > p` where `n - p = 1` nesting rule is violated, then all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
+  * If the heading is `ill-formed`, then all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
 
 </details>
 
 ##### Key Alias
 
-By default the string that represents the new key is the heading text itself. To override this setting, one can use a *key alias*. A *key alias* has the following syntax:
+By default, the string that represents the new key is the text of the heading itself. To override this setting, one can use a *key alias*. A *key alias* has the following syntax:
 
 ~~~~
 ## Heading Text [](alias "key-alias")
 ~~~~
 
-where the *link title* is the actual alias, and the string `alias` in the *link destination* is just a marker for parsing purposes.
+where the *link title* is the actual alias, and the character sequence `alias` in the *link destination* is just a marker for parsing purposes.
 
-The key is set to be the string between the dobule-quotes.
+The key is set to be the string between the double-quotes.
 
 <details>
 <summary>Annotation</summary>
@@ -304,11 +306,11 @@ syntax instead. This, however, would greatly influence the *presentation layer* 
 
 **Ambiguous Syntax**
 
-  * If the *link text* is not empty, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+  * If the *link text* is not empty, the heading is *ill-formed* and all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
 
 **Interpretation Error**
 
-  * If the `alias` marker is **not** followed by some valid *link text*, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+  * If the `alias` marker is **not** followed by some valid *link title*, then all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
 
 </details>
 
@@ -326,8 +328,8 @@ Skip me [](ignore)
 
 **Ambiguous Sytnax**
 
-  * * If the *link text* is not empty, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
-  * If the `ignore` marker is followed by some valid *link text*, then all subsequent headers and content should be **ignored** until detecting a header where `p = n` or `p > n`.
+  * If the *link text* is not empty, the heading is *ill-formed* and all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
+  * If the `ignore` marker is followed by some valid *link title*, then all subsequent headers and content should be **ignored** until detecting a header with level less than or equal to `n`.
 
 </details>
 
@@ -342,9 +344,9 @@ Keys on the **current object** can be registered using the so-called *emphasis s
 **.key-name** key-metadata
 ~~~~
 
-Emphasis syntax does not require the notion of *ignore alias*. If a syntactically valid (ie. starting with a dot) emphasis is read without an accompanying *key metadata*, then it is automatically ignored.
+The emphasis syntax does not require the notion of *ignore alias*. If a syntactically valid (ie. starting with a dot) emphasis is read without an accompanying *key metadata*, then it is automatically ignored.
 
-Between the GFM Emphasis containing the key name and GFM Inline Link containing the key-metadata, only spaces or tabs are allowed.
+Between the GFM Emphasis containing the key name and GFM Inline Link containing the key metadata, only spaces or tabs are allowed.
 
 <details>
 <summary>Failure</summary>
@@ -361,19 +363,19 @@ Between the GFM Emphasis containing the key name and GFM Inline Link containing 
       * ignore the first key,
       * ignore the second key.
 
-    However, regardless of the exact behaviour, an *interpretation error* must be emitted.
+  However, regardless of the exact behaviour, an *interpretation error* must be emitted.
 
 </details>
 
 ##### Key metadata
 
-The key metadata includes (strictly in this order)
+The key metadata is constructed as follows:
 
-  * the mandatory binding direction of the key, which can be either `left` or `right`,
-  * optionally whether the key introduces a new nested object or not,
-  * an optional key alias.
-
-The fields must be separated by `:` (colon) characters.
+  * *link destionation* (strictly in this order, separated by `:` (colon) characters)
+      * the mandatory binding direction of the key, which can be either `left` or `right`,
+      * optionally whether the key introduces a new nested object or not,
+  * *link title*
+      * an optional key alias.
 
 The exact syntax is as follows:
 
@@ -396,8 +398,8 @@ where the square brackets (except for the first pair) denote optional content.
     
     then the *object key* is *ill-formed*.
   * If the *link text* is not empty, then the *object key* is *ill-formed*.
-  * If a *key metadata* has no corresponding *key name*, then the *key metadata* is ignored.
-  * Inline *ignore alias* and *key alias* elements should be ignored.
+  * If a *key metadata* has no corresponding *key name*, then the *key metadata* is *ill-formed*.
+  * Inline *ignore alias* and *key alias* elements are *ill-formed*.
 
 </details>
 
@@ -423,7 +425,7 @@ My PC has [8](int) gigabytes of **.memory** [](left).
 <details>
 <summary>Annotation</summary>
 
-*Binding directions* is arguably the most complex feature of downson. We could go with binding to the right only, as it covers most of the cases. However, we did not want downson to get in the way and restrain the grammar constructs that can be used. Thus, binding to the left is possible.
+*Binding direction* is arguably the most complex feature of downson. We could go with binding to the right only, as it covers most of the cases. However, we did not want downson to get in the way and restrain the grammar constructs that can be used. Thus, binding to the left is possible.
 
 </details>
 
@@ -493,7 +495,7 @@ which has the following JSON representation:
 
   * At the end of the document, all unterminated nested objects should be closed, and registered with the appropriate keys.
   * At the next header, all unterminated nested objects should be closed, and registered with the appropriate keys.
-  * If a *left-binding* *object key* is detected witout a matching *object terminator*, then the *object key* is *ill-formed*. However, already registered keys and values should remain intact.
+  * If a *left-binding* *object key* is detected witout a matching *object terminator*, then the *object key* is ignored. However, already registered keys and values should remain intact.
   * If a nested object is terminated before matching all of the contained literals or keys, then the unmatched elements should be ignored.
 
 </details>
@@ -535,7 +537,7 @@ Represents a signed whole number.
   * Can start with a leading positive or negative sign.
   * Leading zeros are not allowed.
   * Always decimal.
-  * Digits can be grouped by any of the following characters: `_` (underscore), ` ` (single space), `.` (dot), `,` (comma). Different grouping characters can be mixed in the same literal. Grouping characters must be surrounded by at least one digit on both sides.
+  * Digits can be grouped by any of the following characters: `_` (underscore), ` ` (single space), `.` (dot), `,` (comma). Different grouping characters can be mixed in the same literal. A grouping character must be surrounded by at least one digit on both sides.
 
 ### Notes
 
@@ -625,23 +627,23 @@ A list is an ordered container of heterogenous values. A list can contain values
 An empty list can be represented by the following literal syntax:
 
 ~~~~
-[](list "empty")
+[empty list](list "empty")
 ~~~~
 
-Note, that this counts as a special *value override*, therefore the *link text* is ignored.
+Note, that this counts as a special *value override*.
 
 #### GFM Ordered List Syntax
 
 In simpler cases, mostly when storing primitive values or other lists in a list, the [GFM Ordered List](https://github.github.com/gfm/#ordered-list) syntax can be used. The contents of a GFM list element are inserted into the list.
 
-Precisely, each list item should contain a single *literal* (of any type), that is going to be inserted into the resulting downson list.
+Precisely, each list item should contain a single value (of any type), that is going to be inserted into the resulting downson list.
 
 <details>
 <summary>Failure</summary>
 
 **Implementation Specific**
 
-  * If a list item contains multiple literals, then the behaviour is implementation specific:
+  * If a list item contains multiple values, then the behaviour is implementation specific:
 
       * ignore the previous value,
       * ignore the current value.
@@ -653,7 +655,7 @@ Precisely, each list item should contain a single *literal* (of any type), that 
   * If an *object key* is detected inside a list item and the following are true
       * it has no `object` metadata,
       * it has no containing nested object,
-    then the *object key* is *ill-formed*.
+    then the *object key* is ignored.
 
 </details>
 
@@ -661,8 +663,8 @@ Precisely, each list item should contain a single *literal* (of any type), that 
 
 Objects can be placed into lists created with the GFM Ordered List syntax using either of the following methods:
 
-  * Placing aan empty object literal into the GFM Ordered List element,
-  * Creating a new nested object inside the GFM Ordered List element using the `object` key metadata. The actual key is going to be **ignored** and the created nested object is going to be inserted into the list. Example:
+  * Placing an empty object literal into the GFM Ordered List element,
+  * Creating a new nested object inside the GFM Ordered List element using the `object` key metadata field. The actual key is going to be **ignored** and the created nested object is going to be inserted into the list. Example:
 
       ~~~~
       A list of **.dogs** [](right) in the doggy daycare:
@@ -693,7 +695,7 @@ When one would like to store objects with the same keys in a list, the [GFM Tabl
   * *Ignore aliasing* can be used to ignore columns.
   * The same key may hold values of different types in different rows.
 
-There are two valid syntactical forms for heading cells:
+The following heading cells are considered *well-formed*:
   * a cell containing simple text only (ie. no emphasis or other inline elements). In this case the text is trimmed from both the left and the right and is taken as the key.
   * a cell containing simple text followed by a single key alias or a single ignore alias only.
 
@@ -704,8 +706,8 @@ Normal (ie. non-heading) cells can only contain a single *primitive literal*
 
 **Ambiguous Syntax**
 
-  * If a heading cell is syntactically invalid or its contents are ill-formed, then the **whole** table is **ignored**.
-  * If a normal (ie. non-heading) cell is syntactically invalid or its contents are ill-formed, then the **whole** table is **ignored**.
+  * If a heading cell is *ill-formed*, then the **whole** table is **ignored**.
+  * If a normal (ie. non-heading) cell is *ill-formed*, then the **whole** table is **ignored**.
 
 </details>
 
