@@ -1,6 +1,6 @@
 # Downson
 
-markDOWN Object Notation
+> markDOWN Object Notation
 
 Downson makes it possible to embed typed and structured data into Markdown documents.
 
@@ -26,9 +26,9 @@ Read the specification here: [SPECIFICATION.md](SPECIFICATION.md).
       ~~~~Markdown
       The available **.languages** [](right) are the following:
 
-        1. [Hungarian](string "hun")
-        1. [English](string "eng")
-        1. [German](string "ger")
+        1. [Hungarian](string "hun"),
+        1. [English](string "eng"),
+        1. [German](string "ger").
 
       The **.default language** [](right "default") is set to [Hungarian](string "hun").
       ~~~~
@@ -46,7 +46,7 @@ Read the specification here: [SPECIFICATION.md](SPECIFICATION.md).
   * Describing your PC to your friend:
     * downson
       ~~~~Markdown
-        - Let me show you this **.bad boy** [](right:object "configuration")! It has [8](int) **.cores** [](left) and [16](int) gigs of **.memory** [](left)! []($) **.Impressive** [](right "isImpressiv"), huh? 
+        - Let me show you this **.bad boy** [](right:object "configuration")! It has [8](int) **.cores** [](left) and [16](int) gigs of **.memory** [](left)! []($) **.Impressive** [](right "isImpressive"), huh?
         - [Of course](boolean, "true"), bro!
       ~~~~
     * JSON
@@ -59,6 +59,7 @@ Read the specification here: [SPECIFICATION.md](SPECIFICATION.md).
         "isImpressive": true
       }
       ~~~~
+
 Larger examples can be found in the [examples](examples) directory.
 
 ## Motivation
@@ -88,4 +89,11 @@ This repository contains a test suite that can be used to exercise downson imple
 
 ## Implementations
 
-No implementations yet :frowning:.
+| Project                                                      | Description                               | Language   |
+|--------------------------------------------------------------|-------------------------------------------|:----------:|
+| [downson-js](https://github.com/battila7/downson-js)         | A downson parser library based on marked. | JavaScript |
+| [downson-js-cli](https://github.com/battila7/downson-js-cli) | A command-line downson-to-JSON converter. | JavaScript |
+
+## License
+
+The contents of this repository are licensed under the MIT License – see [LICENSE](LICENSE).
