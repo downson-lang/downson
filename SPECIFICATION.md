@@ -1,6 +1,6 @@
 # The Downson Specification
 
-Version: 0.15.1
+Version: 0.16.0
 
 ## Table of Contents
 
