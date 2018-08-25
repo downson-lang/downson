@@ -246,7 +246,8 @@ Downson supports the following built-in complex types:
 
 ## Object
 
-**Type hint**: `object` - only for the empty object literal
+  * **Type hint**: `object` - only for the empty object literal
+  * **Type parameters**: none
 
 Objects are unordered key-value containers. Keys can be arbitrary strings while values can be of any type including the object type itself.
 
@@ -524,7 +525,8 @@ which has the following JSON representation:
 
 ## String
 
-**Type hint**: `string`
+  * **Type hint**: `string`
+  * **Type parameters**: none
 
 String is a primitive type consisting of a finite sequence of characters.
 
@@ -550,7 +552,8 @@ from a multiline string literal!
 
 ## Signed Integer
 
-**Type hint**: `int`
+  * **Type hint**: `int`
+  * **Type parameters**: none
 
 Represents a signed whole number. 
 
@@ -582,7 +585,8 @@ Implementations are expected to provide at least 64 bits of storage space for si
 
 ## Floating-Point Number
 
-**Type hint**: `float`
+  * **Type hint**: `float`
+  * **Type parameters**: none
 
 The floating-point number type can be used to represent real numbers. Implementations should handle downson's floating-point numbers as IEEE754 binary64 floating-point values.
 
@@ -623,7 +627,8 @@ The exponent part must start with either `e` or `E`. Grouping is disallowed in t
 
 ## Boolean
 
-**Type hint**: `boolean`
+  * **Type hint**: `boolean`
+  * **Type parameters**: none
 
 Represents a truth value. Boolean has only two valid literal values:
 
@@ -640,7 +645,8 @@ Represents a truth value. Boolean has only two valid literal values:
 
 ## List
 
-**Type hint**: `list` - only for the empty list literal
+  * **Type hint**: `list` - only for the empty list literal
+  * **Type parameters**: none
 
 A list is an ordered container of heterogeneous values. A list can contain values of any other type, including the list type itself.
 
