@@ -59,6 +59,26 @@ Read the specification here: [SPECIFICATION.md](SPECIFICATION.md).
         "isImpressive": true
       }
       ~~~~
+  * Type parameters and custom types:
+    * downson
+      ~~~~Markdown
+      My **.favorite color** [](right "favorite") is [aquamarine](rgb:mode=string), but I also **.like** [](right) [#FFFFFF](rgb:mode=hex).
+      ~~~~
+    * JSON
+      ~~~~JSON
+      {
+        "favorite": {
+          "r": 127,
+          "g": 255,
+          "b": 212
+        },
+        "like": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        }
+      }
+      ~~~~
 
 Larger examples can be found in the [examples](examples) directory.
 
