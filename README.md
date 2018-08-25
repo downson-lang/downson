@@ -114,6 +114,10 @@ This repository contains a test suite that can be used to exercise downson imple
 | [downson-js](https://github.com/battila7/downson-js)         | A downson parser library based on marked. | JavaScript |
 | [downson-js-cli](https://github.com/battila7/downson-js-cli) | A command-line downson-to-JSON converter. | JavaScript |
 
+## Contributing
+
+Check out [CONTRIBUTING.md](CONTRIBUTING.md) for infos about contributing!
+
 ## License
 
 The contents of this repository are licensed under the MIT License – see [LICENSE](LICENSE).
