@@ -92,7 +92,7 @@ In the following subsections, the types provided by downson are described.
 A literal representing a value of some primitive type (built-in or custom) is called a *primitive literal*. The syntax of *primitive literals* makes use of the [GFM Inline Link](https://github.github.com/gfm/#inline-link) syntax as follows:
 
   * *link text* is interpreted as the character sequence corresponding to the actual literal,
-  * *link destination* contains the mandatory *type hint*,
+  * *link destination* contains the mandatory *type hint* with optional *type parameters*,
   * the optional *link title* can contain a *value override*.
 
 <details>
@@ -112,12 +112,29 @@ The GFM Inline Link syntax was a good fit for literals. Regarding the *presentat
 **Interpretation Error**
 
   * If the *type hint* describes a known type but neither the *link text*, nor the *value override* describe a valid literal of that type, then both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
+  * If the *type hint* describes a known type but the mandatory type parameters are not set, then both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
 
 </details>
 
-#### Link Destination - Type Hint
+#### Link Destination - Type Hint and Type Parameters
 
 The *link destination* contains the *type hint* which describes the type of the *primitive literal*. The *type hint* can be the name of any built-in primitive type or the name of a custom primitive type.
+
+In addition to the *type hint*, the *link destination* can also contain a finite sequence of *type parameters*. A *type parameter* is a key-value pair which alters the literal parsing process. Implementations are required to pass the actual *type parameters* to custom type processor functions.
+
+The exact link destination syntax is as follows:
+
+~~~~
+type-hint[:parameter=value]*
+~~~~
+
+The actual parameter name and the value is separated by a `=` character, while name-value pairs are separated by `:` characters.
+
+Example:
+
+~~~~Markdown
+[FFFF](bigint:radix=16)
+~~~~
 
 <details>
 <summary>Failure</summary>
@@ -125,8 +142,13 @@ The *link destination* contains the *type hint* which describes the type of the 
 **Ambiguous Syntax**
 
   * If the *type hint* describes an unknown type, then the *primitive literal* is *ill-formed*.
+  * If the *tyhe hint* describes a known type, but the *type parameters* are ill-formed or mandatory parameters are missing, then the *primitive literal* is *ill-formed*.
 
 </details>
+
+##### Type Parameters
+
+
 
 #### Link Title - Value Override
 
