@@ -118,6 +118,10 @@ This repository contains a test suite that can be used to exercise downson imple
 
 Check out [CONTRIBUTING.md](CONTRIBUTING.md) for infos about contributing!
 
+## Acknowledgments
+
+Thanks to all the awesome people (Robi, Bence, Dávid, Ádám, Marin, Zsolt, Lajos, Nándi, Tibor, Péter), who took the time to review the early drafts of this specification!
+
 ## License
 
 The contents of this repository are licensed under the MIT License – see [LICENSE](LICENSE).
