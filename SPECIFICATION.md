@@ -112,7 +112,12 @@ The GFM Inline Link syntax was a good fit for literals. Regarding the *presentat
 **Interpretation Error**
 
   * If the *type hint* describes a known type but neither the *link text*, nor the *value override* describe a valid literal of that type, then both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
-  * If the *type hint* describes a known type but the mandatory type parameters are not set, then both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
+  * If the *type hint* describes a known type but 
+
+      * the mandatory type parameters are not set,
+      * or the supplied values are illegal,
+    
+    then both the *primitive literal* itself and the corresponding *object key* should be **ignored**.
 
 </details>
 
@@ -142,7 +147,7 @@ Example:
 **Ambiguous Syntax**
 
   * If the *type hint* describes an unknown type, then the *primitive literal* is *ill-formed*.
-  * If the *tyhe hint* describes a known type, but the *type parameters* are ill-formed or mandatory parameters are missing, then the *primitive literal* is *ill-formed*.
+  * If the *tyhe hint* describes a known type, but the *type parameters* are ill-formed (ie. they do not adhere to the previous syntax), then the *primitive literal* is *ill-formed*.
 
 </details>
 
