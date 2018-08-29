@@ -2,7 +2,7 @@
 
 Concluding nearly a month of hard work, I'm finally making my (actual) favorite pet project, downson open source. 
 
-In this article, I'd like to give some insight behind the birth of the downson standard, as well as a look into the future. Here I won't go into great detail regarding what downson is or how its syntax looks like. If you're interested in those matters, please see the [README](../README.md) or the [SPECIFICATION](../SPECIFICATION.md) itself.
+In this article, I'd like to give some insight behind the birth of the downson standard, as well as a look into the future. Here I won't go into great detail regarding what downson is or how its syntax looks like. If you're interested in those matters, please see the [README](../README.md) or the [SPECIFICATION](../SPECIFICATION.md) itself (both includes lots of examples).
 
 ## What is downson?
 
