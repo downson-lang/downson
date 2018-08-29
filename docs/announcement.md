@@ -23,3 +23,9 @@ Markdown was a perfect fit for this idea, as it's a well-established standard th
 Although the specification can be considered stable (of course it's open to new suggestions and recommendations), the ecosystem around downson is basically nonexistent. Currently, there's a single JavaScript library and CLI that implements the standard. I hope that through community contributions, a lot more languages and platforms can be covered.
 
 Thus, before releasing the first officially stable (ie. 1.0.0) version of the specification, I'd like to wait for more real life and implementation experience.
+
+## Acknowledgments
+
+I'd like to take the opportunity to say thanks to everyone, who helped me creating downson. Thanks!
+
+Attila Bagossy ([@battila7](https://github.com/battila7/))
