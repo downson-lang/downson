@@ -2,6 +2,8 @@
 
 > markDOWN Object Notation
 
+*Downson is now open source! Read the [announcement](docs/announcement.md)!*
+
 Downson makes it possible to embed typed and structured data into Markdown documents.
 
 **Specification**
